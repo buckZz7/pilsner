@@ -99,12 +99,34 @@ round. First ladder pins (all served via llama.cpp, thinking off):
 - near-full-precision: `Smoffyy/Qwen3.6-27B-Instruct-Revised-GGUF` q8_0
 - 1-bit incumbent: `prism-ml/Bonsai-27B-gguf` Q1_0 (3.8GB)
 - ternary incumbent: `prism-ml/Ternary-Bonsai-27B-gguf` Q2_0 (5.9GB)
-- 2-bit quant: `unsloth/Qwen3.6-27B-GGUF` UD-IQ2_XXS (9.4GB)
+- 2-bit flavor A: `unsloth/Qwen3.6-27B-GGUF` UD-IQ2_XXS (9.4GB)
+- 2-bit flavor B: `unsloth/Qwen3.6-27B-GGUF` UD-Q2_K_XL (11.8GB)
 - small dense: `unsloth/Qwen3-4B-GGUF` Q8_0 (4.3GB)
 
 The scored battery runs 4 trials x 50 tasks (200 sims) — at 1 trial the
 >2% rule is noise (CI ~+/-16%); at 200 sims the CI is ~+/-8%. The king
 is verified at the scored battery size, never the survey size.
+
+## Serving rules (learned the hard way)
+
+- **Operating point:** `--reasoning off` for every rung — Qwen3.6-family
+  thinking runaways (never-closed `<think>`) exhaust context and fail
+  tasks; the arena measures one operating point for everyone.
+- **Context divides by slots:** with a non-unified KV cache,
+  `-c N --parallel P` gives each conversation N/P context, not N.
+  Every rung gets 16k per slot: small models `-c 32768 --parallel 2`,
+  the Q8 floor `-c 16384 --parallel 1`. Verify `n_ctx_slot` in the serve
+  log at startup — an 8k slot halves context silently and inflates error
+  rates (49 context-cap failures on Bonsai 1-bit before the fix).
+- **No result = fail:** tau2 skips tasks that error out; receipts
+  reconcile missing tasks/trials as zeros (marked `no_result`), so a
+  model can't dodge the hard tail by failing to finish.
+- **Fixed user sim for scored batteries:** the ladder uses same-model-both
+  (survey, directional); the scored battery serves a fixed user
+  (Qwen3-4B Q4_K_M) so the customer is constant across entries —
+  otherwise a weak model plays a pushover customer and inflates its own
+  score. Receipts record `user_llm`; the challenge referee refuses
+  mismatched user sims.
 
 ## Plugging in a new base
 
