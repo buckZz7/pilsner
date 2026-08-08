@@ -20,6 +20,8 @@ Env contract (mirrors the FC harness):
                         on|off|auto (default: unspecified; the scored
                         operating point of the arena is off)
   PILSNER_ENGINE        serving engine (e.g. llama.cpp, vllm; default unspecified)
+  PILSNER_PARALLEL      server concurrency slots (default: unspecified;
+                        speed comparisons require same parallel)
 
 Outputs:
   outputs/report_tau2_seed<N>.json  the receipt: score + timing + provenance
@@ -136,6 +138,7 @@ def main() -> int:
     out_dir = Path(_env("PILSNER_OUT", "outputs"))
     reasoning = _env("PILSNER_REASONING", "unspecified")
     engine = _env("PILSNER_ENGINE", "unspecified")
+    parallel = _env("PILSNER_PARALLEL", "unspecified")
 
     if not (t2_dir / "data" / "tau2").is_dir():
         print(f"error: tau2-bench not found at {t2_dir} (set PILSNER_T2_DIR)", file=__import__("sys").stderr)
@@ -175,6 +178,7 @@ def main() -> int:
         "base_url": base_url,
         "reasoning": reasoning,
         "engine": engine,
+        "parallel": parallel,
         "wall_clock_s": round(wall_clock_s, 3),
         "success_rate": score["success_rate"],
         "mean_reward": score["mean_reward"],
