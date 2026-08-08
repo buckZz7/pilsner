@@ -1,33 +1,62 @@
 # Pilsner
 
-Execution-verified tool-calling eval for 27B-class models on one RTX 5090.
-The harness is base-agnostic: it talks to any OpenAI-compatible endpoint
-and never touches weights, so any model (or any new base release) can be
-plugged in with a config change — no code changes.
+Execution-verified agent eval for ultra-compressed 27B-class models on one
+RTX 5090. A fixed-king arena: challengers serve their stack, the arena runs
+the same external task battery against every entry on the same box, and the
+label is a pure function of the measured result.
 
-## The three gates (the spec)
+The repo is base-agnostic: it talks to any OpenAI-compatible endpoint
+(vLLM / llama.cpp server / SGLang) and never touches weights. Any model —
+or any new base release — plugs in with a config change, not a code change.
 
-1. **Size gate** — must run on one RTX 5090 within 32GB (weights + KV cache), measured on the rented eval box.
-2. **Quality floor** — execution-verified FC accuracy must beat the reference model AND the current frontier by >2% (ratchet). Includes a no-call / hallucination guard and a generalization slice (the model must not be brain-damaged outside tool calling).
-3. **Speed tier** — tok/s at the scored context, above the quality floor.
+## The arena
 
-## Reference ladder
+- **The king.** The current champion entry (model + serving stack), served
+  on the eval box. The bar is a live opponent, not a static list.
+- **The challenge.** A submission is a head-to-head match against the king
+  on the same box, same battery, same seed discipline. Sequential per-PR —
+  one challenger at a time.
+- **One number.** Success rate on the scored battery.
+- **One rule.** Beat the king by more than 2% on the scored battery. Equal
+  or worse is a loss.
+- **One tie-break.** Time-to-task completion, measured same-box as wall
+  clock over the battery. Both better and faster wins; quality gates first.
+- **Ratchet.** The winner becomes the king, and the next challenger must
+  beat them. The king is re-verified on a schedule against the full field.
 
-The quality floor is measured against a fixed reference set, all run through the same harness on the same eval box:
+## The gates
 
-- **FP16 base of the same model family** — retention vs full precision
-- **a small unquantized dense model (4B-class)** — the no-compression dollar competitor; 1-bit 27B must be worth its memory
-- **a conventional 2-bit quant of the 27B base** — 1-bit must beat 2-bit on agent tasks, not just itself
+1. **Size gate** — runs on one RTX 5090 within 32GB (weights + KV cache),
+   measured on the eval box.
+2. **Quality floor** — scored battery success rate beats the king by >2%
+   (ratchet). The scored instrument is external (τ2-bench, MIT, Sierra
+   Research): execution-verified agent tasks where the final environment
+   state decides success. No judge anywhere.
+3. **Speed tier** — time-to-task completion above the quality floor.
 
-The harness is base-agnostic: every reference is just another served model. References are pinned (HF id + weights hash) before the first submission round.
+## Why the score is trustworthy
 
-## Why the eval is ungameable
+- **External instrument, not ours.** The scored battery is τ2-bench — the
+  respected agent eval authored outside this repo. We run it; we don't
+  write it.
+- **Execution-verified.** Tasks succeed only if the work is actually done
+  in the simulated world (flight booked, refund issued, database state
+  correct at the end). There is no LLM judge to charm.
+- **Stateful = hard to memorize.** τ2 outcomes depend on the conversation
+  and the evolving database state, not a static answer key.
+- **Same-box measurement.** Quality and speed are measured on the same
+  hardware for every entry. Reproducible from the receipt: model, endpoint,
+  seed, task set, tau2 commit, wall clock.
+- **Nothing hidden.** The battery is public and re-runnable. If real gaming
+  ever appears, the freshness layer is added then — not pre-built.
 
-- **Synthetic, seeded, rotating:** eval items are *generated* from invented tool catalogs with deterministic expected results. Seeds rotate per round, so there is nothing to memorize — ever.
-- **Execution-verified:** a call scores only if it actually *runs against a real function and returns the expected result*. No "looks right" credit. No judge anywhere.
-- **Result-equality, not text-equality:** the model's call is executed and its output compared to the expected output.
-- **Hallucination guard:** queries that no tool can answer must produce *no call*. Wrong-tool and invented-parameter calls are scored as failures.
-- **Generalization guardrail:** a mechanical arithmetic slice the model must clear, so submissions can't be tool-calling-only zombies.
+## Dev tools
+
+The repo also ships a synthetic function-calling harness (`eval/`) as the
+miners' iteration loop. It generates invented tool catalogs, executes calls
+against deterministic mock APIs, and scores result-equality. It is the dev
+tool — fast, free, GPU-free — but it is **not** the scored instrument. The
+arena gate is the τ2 battery above.
 
 ## Run
 
@@ -35,46 +64,61 @@ The harness is base-agnostic: every reference is just another served model. Refe
 # 1. Serve any model (vLLM / llama.cpp / SGLang — any OpenAI-compatible endpoint)
 ./baselines/run_baseline.sh <hf_model_id> <served_name> [seed] [port]
 
-# 2. Or point the harness at an already-running server
+# 2. Run the scored battery against the served model -> receipt
 PILSNER_MODEL=<served_name> \
 PILSNER_BASE_URL=http://localhost:8000/v1 \
-PILSNER_SEED=1 \
-python -m eval.runner
+PILSNER_T2_DIR=/path/to/tau2-bench \
+python3 -m arena.run_tau2
 ```
 
-Outputs: `outputs/report_seed<N>.json` (scores + aggregate speed signals:
-total tokens, tokens/s, tasks/min) and `outputs/receipts_seed<N>.jsonl`
-(raw responses, auditable). The aggregate speed signals are informational
-first-pass throughput from any endpoint; the scored speed tier (gate 3) is
-the same-box concurrent measurement on the eval node, run separately on
-hardware.
+Outputs: `outputs/report_tau2_seed<N>.json` — the receipt (score, timing,
+provenance) and `outputs/report_seed<N>.json` + `outputs/receipts_seed<N>.jsonl`
+from the FC dev harness (raw responses, auditable).
+
+GPU-free verification of the plumbing (no model, no GPU):
+
+```bash
+./arena/e2e_mock.sh        # mock OpenAI server -> tau2 -> receipt
+python3 -m unittest discover -s tests -v
+```
+
+## Reference ladder
+
+The quality floor is anchored by a fixed reference set, all run through the
+same τ2 battery on the same eval box:
+
+- **FP16 base of the same model family** — retention vs full precision
+- **a small unquantized dense model (4B-class)** — the no-compression
+  dollar competitor; a compressed 27B must be worth its memory
+- **a conventional 2-bit quant of the 27B base** — 1-bit must beat 2-bit
+  on agent tasks, not just itself
+
+References are pinned (HF id + weights hash) before the first submission
+round.
 
 ## Plugging in a new base
 
-The harness has no knowledge of any specific base model. Serve the new
-base and point `PILSNER_MODEL` at its served name:
+The harness has no knowledge of any specific base model. Serve the new base
+and point `PILSNER_MODEL` at its served name:
 
 ```bash
 ./baselines/run_baseline.sh Qwen/Qwen3.8-27B qwen3.8-27b 1
+PILSNER_MODEL=qwen3.8-27b python3 -m arena.run_tau2
 ```
-
-No code changes. The eval set is generated independently of the model, so
-scores from different bases are directly comparable.
 
 ## Layout
 
 ```
-eval/          the harness (spec in code)
-  generator.py   synthetic FC eval generator (invented tool catalogs)
-  tools.py       deterministic mock APIs for execution verification
-  gen_slice.py   generalization slice (arithmetic word problems, computed answers)
-  runner.py      OpenAI-compatible client: runs a model, scores, writes receipts
-baselines/     run scripts for stock models
-tests/         scorer verification (no GPU needed)
+arena/             the scored instrument glue: serve -> tau2 -> time -> receipt
+eval/              FC dev harness (iteration tool, not the gate)
+baselines/         reference entrypoint script
+tests/             unit tests (FC scoring + arena glue), GPU-free
+outputs/           receipts and reports (gitignored)
 ```
 
-## Verify (no GPU, no server)
+## Status
 
-```bash
-python -m unittest discover -s tests -v
-```
+Phase 1 (arena plumbing wired, mock-verified) — in progress. Phase 2
+(5090 baseline of the base model) and Phase 3 (first independent scores of
+incumbent low-bit builds) follow when the eval box is up. Governance
+scaffold (REVIEW/EVAL-TRUST/.gittensor/CI) lands before submissions open.
