@@ -66,6 +66,21 @@ class TestBuildCommand(unittest.TestCase):
         self.assertEqual(out2["n_scored"], 2)
         self.assertEqual(out2["success_rate"], 0.5)
 
+    def test_reconcile_missing_fills_trials(self):
+        from arena.run_tau2 import reconcile_missing
+        # 2 tasks x 2 trials; task "1" only appears once (one trial errored)
+        score = {"per_task": [{"task_id": "0", "reward": 1.0},
+                              {"task_id": "0", "reward": 1.0},
+                              {"task_id": "1", "reward": 0.0}],
+                 "n_success": 2, "n_scored": 3,
+                 "success_rate": 2 / 3, "mean_reward": 2 / 3}
+        out = reconcile_missing(score, ["0", "1"], num_trials=2)
+        self.assertEqual(out["n_scored"], 4)          # 4 rows, not 3
+        self.assertEqual(out["n_success"], 2)
+        self.assertEqual(out["success_rate"], 0.5)    # 2/4, not 2/3
+        self.assertEqual(out["per_task"][3], {"task_id": "1", "reward": 0.0,
+                                              "no_result": True})
+
     def test_reconcile_missing_ignores_extra_ids(self):
         from arena.run_tau2 import reconcile_missing
         score = {"per_task": [{"task_id": "0", "reward": 1.0},

@@ -126,19 +126,30 @@ def parse_results(results_path: Path) -> dict:
     }
 
 
-def reconcile_missing(score: dict, expected_ids: list[str]) -> dict:
-    """Count no-result tasks as failures (arena rule: no result = fail).
+def reconcile_missing(score: dict, expected_ids: list[str],
+                      num_trials: int = 1) -> dict:
+    """Count no-result tasks AND trials as failures (arena rule: no
+    result = fail).
 
     tau2 skips tasks that error out (server kills, retry exhaustion,
     context caps). The arena must not let a model dodge the hard tail by
     failing to finish: missing tasks are scored 0 and marked no_result.
+    With num_trials > 1, missing TRIALS are filled too — a task that
+    errored in 2 of its 4 trials must show 4 rows, not 2.
     """
-    seen = {str(pt.get("task_id")) for pt in score["per_task"]}
-    missing = [tid for tid in expected_ids if str(tid) not in seen]
-    if missing:
-        for tid in missing:
-            score["per_task"].append(
-                {"task_id": str(tid), "reward": 0.0, "no_result": True})
+    counts: dict[str, int] = {}
+    for pt in score["per_task"]:
+        counts[str(pt.get("task_id"))] = counts.get(str(pt.get("task_id")), 0) + 1
+    added = 0
+    for tid in expected_ids:
+        have = counts.get(str(tid), 0)
+        need = num_trials - have
+        if need > 0:
+            for _ in range(need):
+                score["per_task"].append(
+                    {"task_id": str(tid), "reward": 0.0, "no_result": True})
+            added += need
+    if added:
         score["n_scored"] = len(score["per_task"])
         score["n_success"] = sum(1 for pt in score["per_task"]
                                  if pt["reward"] >= 1.0)
@@ -214,7 +225,8 @@ def main() -> int:
         return 4
 
     score = parse_results(results_path)
-    score = reconcile_missing(score, expected_task_ids(t2_dir, domain, num_tasks))
+    score = reconcile_missing(score, expected_task_ids(t2_dir, domain, num_tasks),
+                              num_trials)
     results_sha = hashlib.sha256(results_path.read_bytes()).hexdigest()
     receipt = {
         "schema": "pilsner-tau2-receipt/v1",
