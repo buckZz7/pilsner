@@ -12,7 +12,12 @@ Env contract (mirrors the FC harness):
   PILSNER_T2_DOMAIN     tau2 domain (default: airline)
   PILSNER_T2_TASKS      number of tasks to run (default: 10)
   PILSNER_T2_TRIALS     trials per task (default: 1)
-  PILSNER_T2_MAX_STEPS  cap on conversation steps per trial (default: tau2's own)
+  PILSNER_T2_MAX_STEPS  cap on conversation steps per trial (default:
+                        tau2's 200 — too generous for an arena; the
+                        scored battery uses 50. Pathological tasks grind
+                        2h at 200.)
+  PILSNER_T2_MAX_STEPS_SECONDS  per-attempt wall cap in seconds
+                        (default: tau2's 1200; scored battery uses 600)
   PILSNER_T2_TASK_SPLIT task split (default: base)
   PILSNER_SEED          seed slot (default: 1; recorded in the receipt)
   PILSNER_OUT           output dir (default: outputs)
@@ -218,6 +223,8 @@ def main() -> int:
     num_trials = int(_env("PILSNER_T2_TRIALS", "1"))
     max_steps_env = _env("PILSNER_T2_MAX_STEPS", "")
     max_steps = int(max_steps_env) if max_steps_env else None
+    max_steps_s_env = _env("PILSNER_T2_MAX_STEPS_SECONDS", "")
+    max_steps_s = int(max_steps_s_env) if max_steps_s_env else None
     task_split = _env("PILSNER_T2_TASK_SPLIT", "base")
     seed = int(_env("PILSNER_SEED", "1"))
     out_dir = Path(_env("PILSNER_OUT", "outputs"))
@@ -242,6 +249,8 @@ def main() -> int:
         cmd = [tau2_binary(t2_dir)] + build_command(
             model, base_url, d, num_tasks, num_trials, max_steps, task_split,
             user_model or None, user_base_url or None)
+        if max_steps_s is not None:
+            cmd += ["--max-steps-seconds", str(max_steps_s)]
         print(f"run ({d}):", " ".join(cmd))
         proc = subprocess.run(cmd, cwd=t2_dir, env=env)
         if proc.returncode != 0:
@@ -275,6 +284,7 @@ def main() -> int:
         "num_tasks": num_tasks,
         "num_trials": num_trials,
         "max_steps": max_steps,
+        "max_steps_seconds": max_steps_s,
         "seed_slot": seed,
         "model": model,
         "base_url": base_url,
