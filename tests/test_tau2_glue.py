@@ -81,6 +81,26 @@ class TestBuildCommand(unittest.TestCase):
         self.assertEqual(out["per_task"][3], {"task_id": "1", "reward": 0.0,
                                               "no_result": True})
 
+    def test_merge_scores_aggregates_domains(self):
+        from arena.run_tau2 import merge_scores
+        scores = [
+            {"per_task": [{"task_id": "0", "reward": 1.0, "domain": "airline"},
+                          {"task_id": "1", "reward": 0.0, "domain": "airline"}],
+             "n_scored": 2, "n_success": 1, "tau2_git_commit": "a",
+             "agent_llm": "m", "user_llm": "u"},
+            {"per_task": [{"task_id": "0", "reward": 0.0, "domain": "retail"},
+                          {"task_id": "1", "reward": 1.0, "domain": "retail"}],
+             "n_scored": 2, "n_success": 1, "tau2_git_commit": "a",
+             "agent_llm": "m", "user_llm": "u"},
+        ]
+        m = merge_scores(scores)
+        self.assertEqual(m["n_scored"], 4)
+        self.assertEqual(m["n_success"], 2)
+        self.assertEqual(m["success_rate"], 0.5)
+        self.assertEqual(len(m["per_task"]), 4)
+        self.assertEqual({pt["domain"] for pt in m["per_task"]},
+                         {"airline", "retail"})
+
     def test_reconcile_missing_ignores_extra_ids(self):
         from arena.run_tau2 import reconcile_missing
         score = {"per_task": [{"task_id": "0", "reward": 1.0},

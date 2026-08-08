@@ -173,6 +173,25 @@ def expected_task_ids(t2_dir: Path, domain: str, num_tasks: int) -> list[str]:
     return [str(i) for i in range(num_tasks)]
 
 
+def merge_scores(scores: list[dict]) -> dict:
+    """Merge per-domain scores into one aggregate (multi-domain battery).
+
+    per_task entries carry their domain tag; counts sum across domains.
+    """
+    merged = {
+        "per_task": [pt for s in scores for pt in s["per_task"]],
+        "n_scored": sum(s["n_scored"] for s in scores),
+        "n_success": sum(s["n_success"] for s in scores),
+        "tau2_git_commit": scores[0]["tau2_git_commit"],
+        "agent_llm": scores[0]["agent_llm"],
+        "user_llm": scores[0].get("user_llm"),
+    }
+    merged["success_rate"] = merged["n_success"] / merged["n_scored"]
+    merged["mean_reward"] = (sum(pt["reward"] for pt in merged["per_task"])
+                             / merged["n_scored"])
+    return merged
+
+
 def latest_results(t2_dir: Path) -> Path | None:
     """Newest results.json under data/simulations/ (live tau2 run output)."""
     matches = sorted(
@@ -193,6 +212,8 @@ def main() -> int:
     base_url = _env("PILSNER_BASE_URL", "http://localhost:8000/v1")
     t2_dir = Path(_env("PILSNER_T2_DIR", str(REPO_ROOT.parent / "tau2-bench")))
     domain = _env("PILSNER_T2_DOMAIN", "airline")
+    domains = [d.strip() for d in
+               _env("PILSNER_T2_DOMAINS", domain).split(",") if d.strip()]
     num_tasks = int(_env("PILSNER_T2_TASKS", "10"))
     num_trials = int(_env("PILSNER_T2_TRIALS", "1"))
     max_steps_env = _env("PILSNER_T2_MAX_STEPS", "")
@@ -211,35 +232,45 @@ def main() -> int:
         print(f"error: tau2-bench not found at {t2_dir} (set PILSNER_T2_DIR)", file=__import__("sys").stderr)
         return 2
 
-    cmd = [tau2_binary(t2_dir)] + build_command(
-        model, base_url, domain, num_tasks, num_trials, max_steps, task_split,
-        user_model or None, user_base_url or None)
-    print("run:", " ".join(cmd))
     env = dict(os.environ)
     env.setdefault("OPENAI_API_KEY", "pilsner-dummy-key")
 
     started = time.monotonic()
-    proc = subprocess.run(cmd, cwd=t2_dir, env=env)
+    scores = []
+    results_files = []
+    for d in domains:
+        cmd = [tau2_binary(t2_dir)] + build_command(
+            model, base_url, d, num_tasks, num_trials, max_steps, task_split,
+            user_model or None, user_base_url or None)
+        print(f"run ({d}):", " ".join(cmd))
+        proc = subprocess.run(cmd, cwd=t2_dir, env=env)
+        if proc.returncode != 0:
+            print(f"error: tau2 exited {proc.returncode} for domain {d}",
+                  file=__import__("sys").stderr)
+            return 3
+        results_path = latest_results(t2_dir)
+        if results_path is None:
+            print(f"error: no results.json after domain {d}",
+                  file=__import__("sys").stderr)
+            return 4
+        score = parse_results(results_path)
+        score = reconcile_missing(score, expected_task_ids(t2_dir, d, num_tasks),
+                                  num_trials)
+        for pt in score["per_task"]:
+            pt["domain"] = d
+        scores.append(score)
+        results_files.append(results_path)
     wall_clock_s = time.monotonic() - started
-    if proc.returncode != 0:
-        print(f"error: tau2 exited {proc.returncode}", file=__import__("sys").stderr)
-        return 3
 
-    results_path = latest_results(t2_dir)
-    if results_path is None:
-        print("error: no results.json found under data/tau2/simulations/", file=__import__("sys").stderr)
-        return 4
-
-    score = parse_results(results_path)
-    score = reconcile_missing(score, expected_task_ids(t2_dir, domain, num_tasks),
-                              num_trials)
-    results_sha = hashlib.sha256(results_path.read_bytes()).hexdigest()
+    # merge across domains: aggregate counts, per-task tagged by domain
+    merged = merge_scores(scores)
+    results_sha = hashlib.sha256(b"".join(p.read_bytes() for p in results_files)).hexdigest()
     receipt = {
         "schema": "pilsner-tau2-receipt/v1",
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "arena": "pilsner",
         "instrument": "tau2-bench",
-        "domain": domain,
+        "domain": "+".join(domains),
         "task_split": task_split,
         "num_tasks": num_tasks,
         "num_trials": num_trials,
@@ -252,15 +283,15 @@ def main() -> int:
         "parallel": parallel,
         "context": ctx,
         "wall_clock_s": round(wall_clock_s, 3),
-        "success_rate": score["success_rate"],
-        "mean_reward": score["mean_reward"],
-        "n_success": score["n_success"],
-        "n_scored": score["n_scored"],
-        "per_task": score["per_task"],
-        "tau2_git_commit": score["tau2_git_commit"],
-        "agent_llm": score["agent_llm"],
-        "user_llm": score.get("user_llm"),
-        "results_file": str(results_path.relative_to(t2_dir)),
+        "success_rate": merged["success_rate"],
+        "mean_reward": merged["mean_reward"],
+        "n_success": merged["n_success"],
+        "n_scored": merged["n_scored"],
+        "per_task": merged["per_task"],
+        "tau2_git_commit": merged["tau2_git_commit"],
+        "agent_llm": merged["agent_llm"],
+        "user_llm": merged.get("user_llm"),
+        "results_file": ",".join(str(p.relative_to(t2_dir)) for p in results_files),
         "results_sha256": results_sha,
     }
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -268,8 +299,8 @@ def main() -> int:
     with open(receipt_path, "w") as f:
         json.dump(receipt, f, indent=2)
     print(f"receipt: {receipt_path}")
-    print(f"success_rate={score['success_rate']:.3f} "
-          f"({score['n_success']}/{score['n_scored']}) wall_clock={wall_clock_s:.1f}s")
+    print(f"success_rate={merged['success_rate']:.3f} "
+          f"({merged['n_success']}/{merged['n_scored']}) wall_clock={wall_clock_s:.1f}s")
     return 0
 
 
