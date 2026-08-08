@@ -87,7 +87,7 @@ python3 -m unittest discover -s tests -v
 The quality floor is anchored by a fixed reference set, all run through the
 same τ2 battery on the same eval box:
 
-- **FP16 base of the same model family** — retention vs full precision
+- **Near-full-precision base of the same model family** — retention vs full precision. Served as FP8 (~27GB, vLLM) or Q8_0 GGUF (~28.5GB): 27B at FP16 is ~54GB and cannot fit one 32GB 5090
 - **a small unquantized dense model (4B-class)** — the no-compression
   dollar competitor; a compressed 27B must be worth its memory
 - **a conventional 2-bit quant of the 27B base** — 1-bit must beat 2-bit
