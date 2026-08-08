@@ -32,6 +32,7 @@ endpoint, same tau2 commit, same seed, same box.
 from __future__ import annotations
 
 import glob
+import hashlib
 import json
 import os
 import subprocess
@@ -158,6 +159,7 @@ def main() -> int:
         return 4
 
     score = parse_results(results_path)
+    results_sha = hashlib.sha256(results_path.read_bytes()).hexdigest()
     receipt = {
         "schema": "pilsner-tau2-receipt/v1",
         "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -182,6 +184,7 @@ def main() -> int:
         "tau2_git_commit": score["tau2_git_commit"],
         "agent_llm": score["agent_llm"],
         "results_file": str(results_path.relative_to(t2_dir)),
+        "results_sha256": results_sha,
     }
     out_dir.mkdir(parents=True, exist_ok=True)
     receipt_path = out_dir / f"report_tau2_seed{seed}.json"
