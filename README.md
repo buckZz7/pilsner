@@ -42,7 +42,12 @@ PILSNER_SEED=1 \
 python -m eval.runner
 ```
 
-Outputs: `outputs/report_seed<N>.json` (scores) and `outputs/receipts_seed<N>.jsonl` (raw responses, auditable).
+Outputs: `outputs/report_seed<N>.json` (scores + aggregate speed signals:
+total tokens, tokens/s, tasks/min) and `outputs/receipts_seed<N>.jsonl`
+(raw responses, auditable). The aggregate speed signals are informational
+first-pass throughput from any endpoint; the scored speed tier (gate 3) is
+the same-box concurrent measurement on the eval node, run separately on
+hardware.
 
 ## Plugging in a new base
 

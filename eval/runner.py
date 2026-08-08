@@ -19,6 +19,13 @@ Scoring (all mechanical, no judge):
     - correct if the model emitted NO tool call (hallucination guard)
   gen items:
     - correct if the model's final answer matches the computed answer
+
+Speed signals (v0): the report includes aggregate endpoint throughput —
+total_tokens (from usage), tokens/s, and tasks/min over the whole battery.
+This is an informational first signal, available from any endpoint with no
+extra requests. The SCORED speed tier (gate 3) is the same-box concurrent
+measurement on the eval node (interleaved vs reference, tok/s at scored
+context), run separately on hardware.
 """
 from __future__ import annotations
 
@@ -167,6 +174,8 @@ def main() -> None:
     n_nocall = len(items) - n_call
     fc_ok = sum(1 for r in fc_results if r["ok"])
     gen_ok = sum(1 for r in gen_results if r["ok"])
+    total_tokens = sum(r["response"].get("usage", {}).get("total_tokens", 0) for r in receipts)
+    n_tasks = len(items) + len(gen_items)
 
     report = {
         "model": MODEL,
@@ -179,6 +188,9 @@ def main() -> None:
         "items_total": len(items),
         "gen_items": len(gen_results),
         "elapsed_s": round(elapsed, 1),
+        "total_tokens": total_tokens,
+        "tokens_per_sec": round(total_tokens / elapsed, 1) if elapsed > 0 else 0.0,
+        "tasks_per_min": round(n_tasks / elapsed * 60, 1) if elapsed > 0 else 0.0,
         "errors": [r for r in fc_results + gen_results if not r["ok"]][:10],
     }
     with open(OUT_DIR / f"report_seed{SEED}.json", "w", encoding="utf-8") as f:
