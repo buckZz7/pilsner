@@ -22,6 +22,12 @@ Env contract (mirrors the FC harness):
   PILSNER_ENGINE        serving engine (e.g. llama.cpp, vllm; default unspecified)
   PILSNER_PARALLEL      server concurrency slots (default: unspecified;
                         speed comparisons require same parallel)
+  PILSNER_USER_MODEL    fixed user-simulator model (default: same as agent).
+                        The scored battery uses a FIXED user sim across all
+                        entries so the customer is constant — otherwise a
+                        weak model plays a pushover customer and inflates
+                        its own agent score (the ladder confound).
+  PILSNER_USER_BASE_URL user-sim endpoint (default: same as PILSNER_BASE_URL)
 
 Outputs:
   outputs/report_tau2_seed<N>.json  the receipt: score + timing + provenance
@@ -57,17 +63,27 @@ def build_command(
     num_trials: int,
     max_steps: int | None,
     task_split: str,
+    user_model: str | None = None,
+    user_base_url: str | None = None,
 ) -> list[str]:
-    """Build the tau2 CLI arguments (after the executable) for a served model."""
+    """Build the tau2 CLI arguments (after the executable) for a served model.
+
+    user_model/user_base_url override the user simulator (the fixed-user
+    design for the scored battery); defaults to the agent model/endpoint.
+    """
     litellm_model = model if "/" in model else f"openai/{model}"
+    umodel = user_model or model
+    litellm_user = umodel if "/" in umodel else f"openai/{umodel}"
+    ubase = user_base_url or base_url
     llm_args = json.dumps({"api_base": base_url, "temperature": 0.0})
+    user_args = json.dumps({"api_base": ubase, "temperature": 0.0})
     cmd = [
         "run",
         "--domain", domain,
         "--agent-llm", litellm_model,
         "--agent-llm-args", llm_args,
-        "--user-llm", litellm_model,
-        "--user-llm-args", llm_args,
+        "--user-llm", litellm_user,
+        "--user-llm-args", user_args,
         "--num-trials", str(num_trials),
         "--num-tasks", str(num_tasks),
         "--task-split-name", task_split,
@@ -106,6 +122,7 @@ def parse_results(results_path: Path) -> dict:
         "seed": info.get("seed"),
         "tau2_git_commit": info.get("git_commit"),
         "agent_llm": info.get("agent_info", {}).get("llm"),
+        "user_llm": info.get("user_info", {}).get("llm"),
     }
 
 
@@ -139,12 +156,16 @@ def main() -> int:
     reasoning = _env("PILSNER_REASONING", "unspecified")
     engine = _env("PILSNER_ENGINE", "unspecified")
     parallel = _env("PILSNER_PARALLEL", "unspecified")
+    user_model = _env("PILSNER_USER_MODEL", "")
+    user_base_url = _env("PILSNER_USER_BASE_URL", "")
 
     if not (t2_dir / "data" / "tau2").is_dir():
         print(f"error: tau2-bench not found at {t2_dir} (set PILSNER_T2_DIR)", file=__import__("sys").stderr)
         return 2
 
-    cmd = [tau2_binary(t2_dir)] + build_command(model, base_url, domain, num_tasks, num_trials, max_steps, task_split)
+    cmd = [tau2_binary(t2_dir)] + build_command(
+        model, base_url, domain, num_tasks, num_trials, max_steps, task_split,
+        user_model or None, user_base_url or None)
     print("run:", " ".join(cmd))
     env = dict(os.environ)
     env.setdefault("OPENAI_API_KEY", "pilsner-dummy-key")
@@ -187,6 +208,7 @@ def main() -> int:
         "per_task": score["per_task"],
         "tau2_git_commit": score["tau2_git_commit"],
         "agent_llm": score["agent_llm"],
+        "user_llm": score.get("user_llm"),
         "results_file": str(results_path.relative_to(t2_dir)),
         "results_sha256": results_sha,
     }

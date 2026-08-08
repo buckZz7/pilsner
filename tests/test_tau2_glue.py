@@ -30,6 +30,19 @@ class TestBuildCommand(unittest.TestCase):
         cmd2 = build_command("mock", "u", "airline", 5, 1, 4, "base")
         self.assertEqual(cmd2[cmd2.index("--max-steps") + 1], "4")
 
+    def test_fixed_user_simulator(self):
+        cmd = build_command("mock", "http://a/v1", "airline", 5, 1, None, "base",
+                            user_model="user4b", user_base_url="http://b/v1")
+        i = cmd.index("--user-llm")
+        self.assertEqual(cmd[i + 1], "openai/user4b")
+        j = cmd.index("--user-llm-args")
+        self.assertIn("http://b/v1", cmd[j + 1])
+        self.assertNotIn("http://b/v1", cmd[cmd.index("--agent-llm-args") + 1])
+
+    def test_default_user_is_agent(self):
+        cmd = build_command("mock", "http://a/v1", "airline", 5, 1, None, "base")
+        self.assertEqual(cmd[cmd.index("--user-llm") + 1], "openai/mock")
+
 
 class TestParseResults(unittest.TestCase):
     def _results(self, rewards):
