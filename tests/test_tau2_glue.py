@@ -57,8 +57,12 @@ class TestBuildCommand(unittest.TestCase):
         self.assertEqual(out["success_rate"], 0.25)
         self.assertEqual(out["per_task"][2], {"task_id": "2", "reward": 0.0,
                                               "no_result": True})
-        # no missing -> unchanged
-        out2 = reconcile_missing(score, ["0", "1"])
+        # no missing -> unchanged (fresh score; reconcile mutates in place)
+        fresh = {"per_task": [{"task_id": "0", "reward": 1.0},
+                              {"task_id": "1", "reward": 0.0}],
+                 "n_success": 1, "n_scored": 2,
+                 "success_rate": 0.5, "mean_reward": 0.5}
+        out2 = reconcile_missing(fresh, ["0", "1"])
         self.assertEqual(out2["n_scored"], 2)
         self.assertEqual(out2["success_rate"], 0.5)
 
