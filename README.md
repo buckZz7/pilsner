@@ -94,7 +94,17 @@ same τ2 battery on the same eval box:
   on agent tasks, not just itself
 
 References are pinned (HF id + weights hash) before the first submission
-round.
+round. First ladder pins (all served via llama.cpp, thinking off):
+
+- near-full-precision: `Smoffyy/Qwen3.6-27B-Instruct-Revised-GGUF` q8_0
+- 1-bit incumbent: `prism-ml/Bonsai-27B-gguf` Q1_0 (3.8GB)
+- ternary incumbent: `prism-ml/Ternary-Bonsai-27B-gguf` Q2_0 (5.9GB)
+- 2-bit quant: `unsloth/Qwen3.6-27B-GGUF` UD-IQ2_XXS (9.4GB)
+- small dense: `unsloth/Qwen3-4B-GGUF` Q8_0 (4.3GB)
+
+The scored battery runs 4 trials x 50 tasks (200 sims) — at 1 trial the
+>2% rule is noise (CI ~+/-16%); at 200 sims the CI is ~+/-8%. The king
+is verified at the scored battery size, never the survey size.
 
 ## Plugging in a new base
 
