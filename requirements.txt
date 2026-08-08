@@ -1,0 +1,4 @@
+# Runner is stdlib-only (urllib) — zero deps to run the harness.
+# On the GPU box, install a serving engine (any OpenAI-compatible works):
+#   pip install vllm
+# (llama.cpp server / SGLang also fine)
