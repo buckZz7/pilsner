@@ -43,6 +43,35 @@ class TestBuildCommand(unittest.TestCase):
         cmd = build_command("mock", "http://a/v1", "airline", 5, 1, None, "base")
         self.assertEqual(cmd[cmd.index("--user-llm") + 1], "openai/mock")
 
+    def test_reconcile_missing_counts_no_result_as_fail(self):
+        from arena.run_tau2 import reconcile_missing
+        score = {
+            "per_task": [{"task_id": "0", "reward": 1.0},
+                         {"task_id": "1", "reward": 0.0}],
+            "n_success": 1, "n_scored": 2,
+            "success_rate": 0.5, "mean_reward": 0.5,
+        }
+        out = reconcile_missing(score, ["0", "1", "2", "3"])
+        self.assertEqual(out["n_scored"], 4)
+        self.assertEqual(out["n_success"], 1)
+        self.assertEqual(out["success_rate"], 0.25)
+        self.assertEqual(out["per_task"][2], {"task_id": "2", "reward": 0.0,
+                                              "no_result": True})
+        # no missing -> unchanged
+        out2 = reconcile_missing(score, ["0", "1"])
+        self.assertEqual(out2["n_scored"], 2)
+        self.assertEqual(out2["success_rate"], 0.5)
+
+    def test_reconcile_missing_ignores_extra_ids(self):
+        from arena.run_tau2 import reconcile_missing
+        score = {"per_task": [{"task_id": "0", "reward": 1.0},
+                              {"task_id": "7", "reward": 1.0}],
+                 "n_success": 2, "n_scored": 2,
+                 "success_rate": 1.0, "mean_reward": 1.0}
+        out = reconcile_missing(score, ["0", "1", "2"])
+        self.assertEqual(out["n_scored"], 3)
+        self.assertEqual(out["success_rate"], 2 / 3)
+
 
 class TestParseResults(unittest.TestCase):
     def _results(self, rewards):

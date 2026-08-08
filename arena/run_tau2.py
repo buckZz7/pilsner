@@ -126,6 +126,37 @@ def parse_results(results_path: Path) -> dict:
     }
 
 
+def reconcile_missing(score: dict, expected_ids: list[str]) -> dict:
+    """Count no-result tasks as failures (arena rule: no result = fail).
+
+    tau2 skips tasks that error out (server kills, retry exhaustion,
+    context caps). The arena must not let a model dodge the hard tail by
+    failing to finish: missing tasks are scored 0 and marked no_result.
+    """
+    seen = {str(pt.get("task_id")) for pt in score["per_task"]}
+    missing = [tid for tid in expected_ids if str(tid) not in seen]
+    if missing:
+        for tid in missing:
+            score["per_task"].append(
+                {"task_id": str(tid), "reward": 0.0, "no_result": True})
+        score["n_scored"] = len(score["per_task"])
+        score["n_success"] = sum(1 for pt in score["per_task"]
+                                 if pt["reward"] >= 1.0)
+        score["success_rate"] = score["n_success"] / score["n_scored"]
+        score["mean_reward"] = (sum(pt["reward"] for pt in score["per_task"])
+                                / score["n_scored"])
+    return score
+
+
+def expected_task_ids(t2_dir: Path, domain: str, num_tasks: int) -> list[str]:
+    """The first num_tasks task ids of the domain's base split."""
+    p = t2_dir / "data" / "tau2" / "domains" / domain / "tasks.json"
+    if p.exists():
+        tasks = json.load(open(p))
+        return [str(t.get("id")) for t in tasks[:num_tasks]]
+    return [str(i) for i in range(num_tasks)]
+
+
 def latest_results(t2_dir: Path) -> Path | None:
     """Newest results.json under data/simulations/ (live tau2 run output)."""
     matches = sorted(
@@ -183,6 +214,7 @@ def main() -> int:
         return 4
 
     score = parse_results(results_path)
+    score = reconcile_missing(score, expected_task_ids(t2_dir, domain, num_tasks))
     results_sha = hashlib.sha256(results_path.read_bytes()).hexdigest()
     receipt = {
         "schema": "pilsner-tau2-receipt/v1",
