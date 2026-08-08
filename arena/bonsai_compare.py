@@ -33,8 +33,8 @@ THEIR_TAU2 = {
 }
 
 DISCLOSURES = (
-    "theirs: thinking ON | H100 | EvalScope+vLLM | gpt-4.1 user sim",
-    "ours:  thinking OFF | 5090 | llama.cpp | same-model user sim (ladder)",
+    "theirs: thinking ON | H100 | EvalScope+vLLM | gpt-4.1 user sim | ~100k+ ctx",
+    "ours:  thinking OFF | 5090 | llama.cpp | same-model user sim (ladder) | 16k ctx",
 )
 
 BONSAI_MODELS = {"bonsai-1bit": "Bonsai 1-bit 27B",
