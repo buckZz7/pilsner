@@ -11,6 +11,16 @@ plugged in with a config change — no code changes.
 2. **Quality floor** — execution-verified FC accuracy must beat the reference model AND the current frontier by >2% (ratchet). Includes a no-call / hallucination guard and a generalization slice (the model must not be brain-damaged outside tool calling).
 3. **Speed tier** — tok/s at the scored context, above the quality floor.
 
+## Reference ladder
+
+The quality floor is measured against a fixed reference set, all run through the same harness on the same eval box:
+
+- **FP16 base of the same model family** — retention vs full precision
+- **a small unquantized dense model (4B-class)** — the no-compression dollar competitor; 1-bit 27B must be worth its memory
+- **a conventional 2-bit quant of the 27B base** — 1-bit must beat 2-bit on agent tasks, not just itself
+
+The harness is base-agnostic: every reference is just another served model. References are pinned (HF id + weights hash) before the first submission round.
+
 ## Why the eval is ungameable
 
 - **Synthetic, seeded, rotating:** eval items are *generated* from invented tool catalogs with deterministic expected results. Seeds rotate per round, so there is nothing to memorize — ever.
