@@ -73,8 +73,8 @@ class TestBuildCommand(unittest.TestCase):
                  "n_success": 2, "n_scored": 2,
                  "success_rate": 1.0, "mean_reward": 1.0}
         out = reconcile_missing(score, ["0", "1", "2"])
-        self.assertEqual(out["n_scored"], 3)
-        self.assertEqual(out["success_rate"], 2 / 3)
+        self.assertEqual(out["n_scored"], 4)  # 0,7 scored + 1,2 missing
+        self.assertEqual(out["success_rate"], 0.5)
 
 
 class TestParseResults(unittest.TestCase):
