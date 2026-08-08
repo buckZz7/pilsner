@@ -16,6 +16,10 @@ Env contract (mirrors the FC harness):
   PILSNER_T2_TASK_SPLIT task split (default: base)
   PILSNER_SEED          seed slot (default: 1; recorded in the receipt)
   PILSNER_OUT           output dir (default: outputs)
+  PILSNER_REASONING     thinking operating point served by the engine:
+                        on|off|auto (default: unspecified; the scored
+                        operating point of the arena is off)
+  PILSNER_ENGINE        serving engine (e.g. llama.cpp, vllm; default unspecified)
 
 Outputs:
   outputs/report_tau2_seed<N>.json  the receipt: score + timing + provenance
@@ -129,6 +133,8 @@ def main() -> int:
     task_split = _env("PILSNER_T2_TASK_SPLIT", "base")
     seed = int(_env("PILSNER_SEED", "1"))
     out_dir = Path(_env("PILSNER_OUT", "outputs"))
+    reasoning = _env("PILSNER_REASONING", "unspecified")
+    engine = _env("PILSNER_ENGINE", "unspecified")
 
     if not (t2_dir / "data" / "tau2").is_dir():
         print(f"error: tau2-bench not found at {t2_dir} (set PILSNER_T2_DIR)", file=__import__("sys").stderr)
@@ -165,6 +171,8 @@ def main() -> int:
         "seed_slot": seed,
         "model": model,
         "base_url": base_url,
+        "reasoning": reasoning,
+        "engine": engine,
         "wall_clock_s": round(wall_clock_s, 3),
         "success_rate": score["success_rate"],
         "mean_reward": score["mean_reward"],
