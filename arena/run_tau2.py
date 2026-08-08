@@ -22,6 +22,11 @@ Env contract (mirrors the FC harness):
   PILSNER_ENGINE        serving engine (e.g. llama.cpp, vllm; default unspecified)
   PILSNER_PARALLEL      server concurrency slots (default: unspecified;
                         speed comparisons require same parallel)
+  PILSNER_CTX           server context per slot (n_ctx_slot; default
+                        unspecified). Recorded in the receipt — context
+                        changes measurements, so it is part of the
+                        battery key. NOTE: `-c N --parallel P` with a
+                        non-unified KV cache gives each slot N/P, not N.
   PILSNER_USER_MODEL    fixed user-simulator model (default: same as agent).
                         The scored battery uses a FIXED user sim across all
                         entries so the customer is constant — otherwise a
@@ -198,6 +203,7 @@ def main() -> int:
     reasoning = _env("PILSNER_REASONING", "unspecified")
     engine = _env("PILSNER_ENGINE", "unspecified")
     parallel = _env("PILSNER_PARALLEL", "unspecified")
+    ctx = _env("PILSNER_CTX", "unspecified")
     user_model = _env("PILSNER_USER_MODEL", "")
     user_base_url = _env("PILSNER_USER_BASE_URL", "")
 
@@ -244,6 +250,7 @@ def main() -> int:
         "reasoning": reasoning,
         "engine": engine,
         "parallel": parallel,
+        "context": ctx,
         "wall_clock_s": round(wall_clock_s, 3),
         "success_rate": score["success_rate"],
         "mean_reward": score["mean_reward"],
