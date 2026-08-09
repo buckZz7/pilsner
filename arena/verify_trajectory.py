@@ -48,10 +48,11 @@ def _regenerate_bundle(receipt: dict, benchbrew_dir: Path) -> tuple[bool, list[s
     seed, n = bb.get("seed"), bb.get("n_tasks")
     if not seed or not n:
         return False, ["benchbrew block missing seed/n_tasks"]
-    proc = subprocess.run(
-        [sys.executable, "-m", "benchbrew", "--seed", str(seed),
-         "--tasks", str(n), "--quiet"],
-        cwd=benchbrew_dir, capture_output=True, text=True)
+    cmd = [sys.executable, "-m", "benchbrew", "--seed", str(seed),
+           "--tasks", str(n), "--quiet"]
+    if bb.get("domain"):
+        cmd += ["--domain", str(bb["domain"])]
+    proc = subprocess.run(cmd, cwd=benchbrew_dir, capture_output=True, text=True)
     if proc.returncode != 0:
         return False, [f"benchbrew regenerate failed: {proc.stderr[-200:]}"]
     kv = {}

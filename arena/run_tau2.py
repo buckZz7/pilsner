@@ -304,9 +304,11 @@ def main() -> int:
     max_steps_s = int(max_steps_s_env) if max_steps_s_env else None
     task_split = _env("PILSNER_T2_TASK_SPLIT", "base")
     sample_mode = _env("PILSNER_T2_TASK_SAMPLE", "first")
-    seed = int(_env("PILSNER_SEED", "1"))
-    seed_slot = int(_env("PILSNER_SEED_SLOT", str(seed)))
     benchbrew_seed = _env("PILSNER_BENCHBREW_SEED", "")
+    # the receipt is named by the seed SLOT; for fresh-lane batteries the
+    # slot defaults to the benchbrew seed so the receipt tracks the bundle
+    seed = int(_env("PILSNER_SEED", benchbrew_seed or "1"))
+    seed_slot = int(_env("PILSNER_SEED_SLOT", str(seed)))
     benchbrew_dir = Path(_env("PILSNER_BENCHBREW_DIR",
                                str(REPO_ROOT.parent / "benchbrew")))
     out_dir = Path(_env("PILSNER_OUT", "outputs"))
@@ -376,6 +378,7 @@ def main() -> int:
             if line.startswith("benchbrew "):
                 kv = dict(p.split("=", 1) for p in line.split()[1:])
                 bb_prov = {
+                    "domain": domains[0],
                     "spec_version": kv.get("version"),
                     "spec_sha256": kv.get("spec_sha256"),
                     "seed": kv.get("seed"),
