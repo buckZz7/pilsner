@@ -310,6 +310,28 @@ def main() -> int:
     benchbrew_dir = Path(_env("PILSNER_BENCHBREW_DIR",
                                str(REPO_ROOT.parent / "benchbrew")))
     out_dir = Path(_env("PILSNER_OUT", "outputs"))
+    seed_source = "operator"
+    if not benchbrew_seed and (benchbrew_dir / "domains" / "marketplace.py").exists():
+        # chain rule: derive the eval seed from the previous verified
+        # receipt's results hash — unknowable until that receipt exists,
+        # not pickable post-hoc by anyone
+        prev = None
+        for p in sorted(out_dir.glob("report_tau2_*.json"), reverse=True):
+            try:
+                r = json.loads(p.read_text())
+                if r.get("benchbrew") and r.get("verified") is True:
+                    prev = r
+                    break
+            except (json.JSONDecodeError, OSError):
+                continue
+        if prev and prev.get("results_sha256"):
+            benchbrew_seed = str(int(prev["results_sha256"][:8], 16) % 100000)
+            seed_source = "chain"
+            print(f"chain rule: eval seed {benchbrew_seed} derived from "
+                  f"previous receipt {prev.get('seed')}")
+        else:
+            print("chain rule: no prior verified benchbrew receipt; "
+                  "set PILSNER_BENCHBREW_SEED explicitly")
     reasoning = _env("PILSNER_REASONING", "unspecified")
     engine = _env("PILSNER_ENGINE", "unspecified")
     parallel = _env("PILSNER_PARALLEL", "unspecified")
@@ -333,6 +355,13 @@ def main() -> int:
     # and anyone can regenerate it (spec + seed) to verify the tasks.
     bb_prov = None
     if benchbrew_seed:
+        # collusion guard: the user sim must be a FIXED model, not the
+        # model being evaluated (otherwise the eval frames its own test)
+        if not user_model or user_model.strip().lower() == model.strip().lower():
+            print("error: benchbrew lanes require a FIXED user simulator "
+                  "different from the agent model (set PILSNER_USER_MODEL / "
+                  "PILSNER_USER_BASE_URL)", file=sys.stderr)
+            return 7
         cmd = [sys.executable, "-m", "benchbrew", "--seed", benchbrew_seed,
                "--tasks", str(num_tasks), "--emit", str(t2_dir), "--quiet"]
         print("benchbrew:", " ".join(cmd))
@@ -349,6 +378,7 @@ def main() -> int:
                     "spec_version": kv.get("version"),
                     "spec_sha256": kv.get("spec_sha256"),
                     "seed": kv.get("seed"),
+                    "seed_source": seed_source,
                     "n_tasks": kv.get("tasks"),
                     "bundle_sha256": kv.get("bundle_sha256"),
                 }
@@ -432,6 +462,38 @@ def main() -> int:
     print(f"receipt: {receipt_path}")
     print(f"success_rate={merged['success_rate']:.3f} "
           f"({merged['n_success']}/{merged['n_scored']}) wall_clock={wall_clock_s:.1f}s")
+
+    # verify the receipt against the recorded evidence before it can reach
+    # the board: replay trajectories, regenerate the bundle, re-derive scores
+    verify_py = t2_dir / ".venv" / "bin" / "python"
+    verify_script = REPO_ROOT / "arena" / "verify_trajectory.py"
+    if verify_py.exists() and verify_script.exists():
+        proc = subprocess.run(
+            [str(verify_py), str(verify_script), str(receipt_path),
+             str(t2_dir), str(benchbrew_dir)],
+            capture_output=True, text=True)
+        try:
+            verdict = json.loads(proc.stdout)
+        except ValueError:
+            verdict = {"verified": False, "failures": [
+                f"verifier output unparseable: {proc.stdout[-200:]}{proc.stderr[-200:]}"]}
+        receipt["verified"] = bool(verdict.get("verified"))
+        receipt["verification"] = {
+            "checks": verdict.get("checks", {}),
+            "failures": verdict.get("failures", []),
+        }
+        with open(receipt_path, "w") as f:
+            json.dump(receipt, f, indent=2)
+        if not receipt["verified"]:
+            print(f"verification FAILED — receipt not board-eligible:")
+            for fl in receipt["verification"]["failures"][:5]:
+                print(f"  - {fl}")
+            return 6
+        print(f"verified: trajectory replay re-derived the score "
+              f"({verdict['checks']['replay']['ok']}/"
+              f"{verdict['checks']['replay']['n']})")
+    else:
+        print("warning: verifier not found; receipt left unverified")
     return 0
 
 

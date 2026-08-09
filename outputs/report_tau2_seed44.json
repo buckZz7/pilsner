@@ -1,0 +1,445 @@
+{
+  "schema": "pilsner-tau2-receipt/v1",
+  "timestamp": "2026-08-09T20:37:02.066638+00:00",
+  "arena": "pilsner",
+  "instrument": "tau2-bench",
+  "benchbrew": {
+    "spec_version": "0.4.0",
+    "spec_sha256": "17b5b4da7b08a0eb",
+    "seed": "44",
+    "n_tasks": "50",
+    "bundle_sha256": "a2c8ba6f0074d616f805af77516e1153094edb3bfa7e829a91af038420557014"
+  },
+  "domain": "marketplace",
+  "task_split": "base",
+  "task_sample": "first",
+  "sampled_task_ids": {
+    "marketplace": "[\"0\", \"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\", \"10\", \"11\", \"12\", \"13\", \"14\", \"15\", \"16\", \"17\", \"18\", \"19\", \"20\", \"21\", \"22\", \"23\", \"24\", \"25\", \"26\", \"27\", \"28\", \"29\", \"30\", \"31\", \"32\", \"33\", \"34\", \"35\", \"36\", \"37\", \"38\", \"39\", \"40\", \"41\", \"42\", \"43\", \"44\", \"45\", \"46\", \"47\", \"48\", \"49\"]"
+  },
+  "num_tasks": 50,
+  "num_trials": 1,
+  "max_steps": null,
+  "max_steps_seconds": null,
+  "seed_slot": 44,
+  "model": "qwen36-iq2xxs",
+  "base_url": "http://87.197.110.78:41176/v1",
+  "reasoning": "off",
+  "engine": "llama.cpp",
+  "engine_version": "unspecified",
+  "model_sha256": "unspecified",
+  "gpu_clock": "unspecified",
+  "parallel": "unspecified",
+  "context": "unspecified",
+  "wall_clock_s": 1097.374,
+  "success_rate": 0.62,
+  "mean_reward": 0.62,
+  "n_success": 31,
+  "n_scored": 50,
+  "per_task": [
+    {
+      "task_id": "0",
+      "reward": 1.0,
+      "tool_calls": 4,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "2",
+      "reward": 0.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "1",
+      "reward": 1.0,
+      "tool_calls": 3,
+      "tool_errors": 2,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "4",
+      "reward": 0.0,
+      "tool_calls": 1,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "3",
+      "reward": 0.0,
+      "tool_calls": 5,
+      "tool_errors": 1,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "5",
+      "reward": 1.0,
+      "tool_calls": 4,
+      "tool_errors": 1,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "6",
+      "reward": 1.0,
+      "tool_calls": 12,
+      "tool_errors": 3,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "7",
+      "reward": 0.0,
+      "tool_calls": 7,
+      "tool_errors": 1,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "9",
+      "reward": 1.0,
+      "tool_calls": 3,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "10",
+      "reward": 1.0,
+      "tool_calls": 5,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "8",
+      "reward": 0.0,
+      "tool_calls": 21,
+      "tool_errors": 10,
+      "termination": "too_many_errors",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "11",
+      "reward": 1.0,
+      "tool_calls": 7,
+      "tool_errors": 4,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "12",
+      "reward": 1.0,
+      "tool_calls": 3,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "14",
+      "reward": 0.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "13",
+      "reward": 1.0,
+      "tool_calls": 8,
+      "tool_errors": 3,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "16",
+      "reward": 0.0,
+      "tool_calls": 1,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "15",
+      "reward": 0.0,
+      "tool_calls": 7,
+      "tool_errors": 2,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "17",
+      "reward": 1.0,
+      "tool_calls": 3,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "19",
+      "reward": 1.0,
+      "tool_calls": 10,
+      "tool_errors": 2,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "20",
+      "reward": 0.0,
+      "tool_calls": 17,
+      "tool_errors": 10,
+      "termination": "too_many_errors",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "21",
+      "reward": 1.0,
+      "tool_calls": 4,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "22",
+      "reward": 1.0,
+      "tool_calls": 4,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "24",
+      "reward": 1.0,
+      "tool_calls": 4,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "18",
+      "reward": 0.0,
+      "tool_calls": 19,
+      "tool_errors": 10,
+      "termination": "too_many_errors",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "26",
+      "reward": 1.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "25",
+      "reward": 1.0,
+      "tool_calls": 3,
+      "tool_errors": 2,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "28",
+      "reward": 0.0,
+      "tool_calls": 1,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "27",
+      "reward": 0.0,
+      "tool_calls": 7,
+      "tool_errors": 3,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "29",
+      "reward": 1.0,
+      "tool_calls": 4,
+      "tool_errors": 1,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "30",
+      "reward": 1.0,
+      "tool_calls": 13,
+      "tool_errors": 2,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "31",
+      "reward": 1.0,
+      "tool_calls": 9,
+      "tool_errors": 2,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "23",
+      "reward": 1.0,
+      "tool_calls": 5,
+      "tool_errors": 2,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "34",
+      "reward": 1.0,
+      "tool_calls": 5,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "32",
+      "reward": 0.0,
+      "tool_calls": 13,
+      "tool_errors": 7,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "36",
+      "reward": 0.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "35",
+      "reward": 1.0,
+      "tool_calls": 5,
+      "tool_errors": 2,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "37",
+      "reward": 1.0,
+      "tool_calls": 5,
+      "tool_errors": 2,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "38",
+      "reward": 0.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "40",
+      "reward": 0.0,
+      "tool_calls": 1,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "39",
+      "reward": 0.0,
+      "tool_calls": 6,
+      "tool_errors": 2,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "42",
+      "reward": 1.0,
+      "tool_calls": 11,
+      "tool_errors": 2,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "41",
+      "reward": 1.0,
+      "tool_calls": 11,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "33",
+      "reward": 1.0,
+      "tool_calls": 3,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "45",
+      "reward": 1.0,
+      "tool_calls": 4,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "43",
+      "reward": 1.0,
+      "tool_calls": 10,
+      "tool_errors": 3,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "46",
+      "reward": 1.0,
+      "tool_calls": 6,
+      "tool_errors": 1,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "48",
+      "reward": 0.0,
+      "tool_calls": 0,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "44",
+      "reward": 0.0,
+      "tool_calls": 24,
+      "tool_errors": 10,
+      "termination": "too_many_errors",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "47",
+      "reward": 1.0,
+      "tool_calls": 5,
+      "tool_errors": 2,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "49",
+      "reward": 1.0,
+      "tool_calls": 5,
+      "tool_errors": 2,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    }
+  ],
+  "tau2_git_commit": "668d3bcd135c02aa3438f987ef45735b7c163ee3",
+  "agent_llm": "openai/qwen36-iq2xxs",
+  "user_llm": "openai/qwen36-iq2xxs",
+  "results_file": "data/simulations/20260809_201849_marketplace_llm_agent_qwen36-iq2xxs_user_simulator_qwen36-iq2xxs/results.json",
+  "results_sha256": "1a229dc0782f6de654fd6c9ddc727a8b327328982a37039b4d7615637888d553"
+}

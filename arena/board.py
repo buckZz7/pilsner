@@ -22,36 +22,46 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
 def build_board(receipts: list[dict]) -> dict:
-    """Rank receipts; the top score is the king. Returns board dict."""
-    entries = []
+    """Pool receipts per (model, domain) and rank. One entry per model+domain
+    aggregates ALL its verified receipts — cherry-picking a lucky battery
+    cannot beat the pool. The king is the top pooled score."""
+    groups: dict[tuple[str, str], list[dict]] = {}
     for r in receipts:
-        lo, hi = wilson_ci(r.get("success_rate", 0.0), r.get("n_scored", 0))
+        groups.setdefault((r.get("model", "?"), r.get("domain", "?")), []).append(r)
+    entries = []
+    for (model, domain), rs in groups.items():
+        n_success = sum(r.get("n_success", 0) for r in rs)
+        n_scored = sum(r.get("n_scored", 0) for r in rs)
+        rate = n_success / n_scored if n_scored else 0.0
+        lo, hi = wilson_ci(rate, n_scored)
+        weighted = sum(r.get("mean_reward", 0.0) * r.get("n_scored", 0)
+                       for r in rs) / n_scored if n_scored else 0.0
         entries.append({
-            "model": r.get("model", "?"),
-            "success_rate": r.get("success_rate", 0.0),
-            "n_success": r.get("n_success", 0),
-            "n_scored": r.get("n_scored", 0),
+            "model": model,
+            "success_rate": round(rate, 4),
+            "n_success": n_success,
+            "n_scored": n_scored,
             "ci95": [round(lo, 4), round(hi, 4)],
-            "mean_reward": r.get("mean_reward", 0.0),
-            "wall_clock_s": r.get("wall_clock_s", 0.0),
-            "reasoning": r.get("reasoning", "unspecified"),
-            "engine": r.get("engine", "unspecified"),
-            "domain": r.get("domain", "?"),
-            "num_trials": r.get("num_trials"),
-            "receipt": r.get("results_file", ""),
-            "tau2_commit": (r.get("tau2_git_commit") or "?")[:10],
-            "results_sha256": (r.get("results_sha256") or "")[:16],
-            "timestamp": r.get("timestamp", ""),
+            "mean_reward": round(weighted, 4),
+            "wall_clock_s": round(sum(r.get("wall_clock_s", 0.0) for r in rs), 1),
+            "reasoning": rs[0].get("reasoning", "unspecified"),
+            "engine": rs[0].get("engine", "unspecified"),
+            "domain": domain,
+            "num_trials": max((r.get("num_trials") for r in rs), default=None),
+            "n_receipts": len(rs),
+            "receipts": [r.get("seed") for r in rs],
+            "tau2_commit": (rs[0].get("tau2_git_commit") or "?")[:10],
+            "results_sha256": (rs[0].get("results_sha256") or "")[:16],
+            "timestamp": rs[-1].get("timestamp", ""),
         })
-    entries.sort(key=lambda e: (e["success_rate"], -e["wall_clock_s"]),
-                 reverse=True)
+    entries.sort(key=lambda e: (-e["success_rate"], -e["n_scored"]))
     for i, e in enumerate(entries):
         e["rank"] = i + 1
     king = entries[0] if entries else None
     return {
-        "board_version": 1,
+        "board_version": 2,
         "updated": datetime.now(timezone.utc).isoformat(),
-        "king": king["model"] if king else None,
+        "king": f"{king['model']} [{king['domain']}]" if king else None,
         "entries": entries,
     }
 
@@ -65,7 +75,20 @@ def main() -> int:
         print(f"no receipts in {out_dir}")
         return 1
     receipts = [json.load(open(p)) for p in paths]
-    board = build_board(receipts)
+    admitted, refused = [], []
+    for r in receipts:
+        if r.get("verified") is True:
+            admitted.append(r)
+        else:
+            refused.append(r)
+    if not admitted:
+        print("no VERIFIED receipts in the board pool; nothing to crown")
+        print(f"({len(refused)} receipts refused: unverified or stale)")
+        for r in refused:
+            print(f"  - {r.get('model', '?')} [{r.get('domain', '?')}]: "
+                  f"{(r.get('verification', {}).get('failures') or ['not verified'])[0][:80]}")
+        return 1
+    board = build_board(admitted)
     print(f"king: {board['king']}  (kings are per-lane; compare within a domain)")
     for e in board["entries"]:
         print(f"  #{e['rank']} {e['model']:<16} {e['success_rate']:.3f} "
