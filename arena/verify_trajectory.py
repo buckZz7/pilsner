@@ -174,20 +174,24 @@ def verify(receipt_path: Path, t2_dir: Path, benchbrew_dir: Path) -> dict:
         failures.extend(bundle_msgs)
 
     # spec-version drift: a benchbrew receipt from another spec epoch is
-    # stale, not forged — its tasks no longer exist as scored
+    # stale, not forged — its tasks no longer exist as scored. Probe the
+    # CURRENT version of the SAME lane (never the default domain).
     bb = receipt.get("benchbrew") or {}
     if bb.get("spec_version"):
-        proc = subprocess.run(
-            [sys.executable, "-m", "benchbrew", "--quiet"],
-            cwd=benchbrew_dir, capture_output=True, text=True)
+        cmd = [sys.executable, "-m", "benchbrew", "--quiet"]
+        if bb.get("domain"):
+            cmd += ["--domain", str(bb["domain"])]
+        proc = subprocess.run(cmd, cwd=benchbrew_dir, capture_output=True,
+                              text=True)
         cur = None
         for line in proc.stdout.strip().splitlines():
             if line.startswith("benchbrew "):
                 cur = dict(p.split("=", 1) for p in line.split()[1:]).get("version")
         if cur and bb.get("spec_version") != cur:
             failures.append(
-                f"stale spec epoch: receipt from marketplace v{bb.get('spec_version')}, "
-                f"current spec is v{cur} — re-run the battery on the current lane")
+                f"stale spec epoch: receipt from {bb.get('domain') or 'spec'} "
+                f"v{bb.get('spec_version')}, current spec is v{cur} — "
+                f"re-run the battery on the current lane")
 
     per_task, replay_failures = _replay_results(receipt, t2_dir)
     failures.extend(replay_failures)
