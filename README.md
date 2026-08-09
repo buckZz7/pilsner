@@ -58,6 +58,42 @@ against deterministic mock APIs, and scores result-equality. It is the dev
 tool — fast, free, GPU-free — but it is **not** the scored instrument. The
 arena gate is the τ2 battery above.
 
+## Measured so far
+
+Reference ladder on the eval box (same binary, reasoning off, 16k context,
+50-task airline battery, one trial, receipts + raw results public in
+`outputs/`). Full board: `outputs/leaderboard.json`.
+
+| Rung | Score (50 tasks) | 95% CI | vs Q8 floor |
+|---|---|---|---|
+| Qwen3.6-27B Q2_K_XL (2-bit) | 0.62 (31) | [0.48, 0.74] | **100%** — 2-bit is free on agent work |
+| Qwen3.6-27B Q8_0 (floor) | 0.62 (31) | [0.48, 0.74] | reference |
+| Qwen3.6-27B IQ2_XXS (2-bit) | 0.54 (27) | [0.40, 0.67] | 87% |
+| Qwen3-4B Q8_0 | 0.18 (9) | [0.10, 0.31] | 29% |
+| Bonsai-27B Q1_0 (1-bit) | 0.16 (8) | [0.08, 0.29] | 26% |
+
+Two conclusions, both independently measured and fully re-runnable:
+
+1. **The 2-bit class retains the full-precision agent.** Q2_K_XL ties the
+   Q8 floor exactly (31/50 each). The vendor's own claim (2-bit ≈ 90% of
+   full precision on τ2) is verified; the stronger 2-bit flavor shows 100%.
+2. **The flagship 1-bit collapses on agent work.** Bonsai-27B at 1-bit
+   scores 0.16 at our operating point (reasoning off, llama.cpp, 5090) —
+   not the ~74% retention implied by their whitepaper table. A plain 2-bit
+   quant beats it 4x (their own Appendix C shows the same direction: 74.58
+   vs 61.34).
+
+The mechanism is not a JSON problem and not context drift. 93 of the
+1-bit's 95 tool errors are `User <id> not found`: the agent must derive the
+passenger ID once from a reservation lookup and reuse it in every tool
+call, and the 1-bit regenerates a guessed variation instead (496, 7075, ...)
+from the first reuse onward. Grammar/schema-constrained decoding cannot
+fix it (the calls are well-formed; the values are wrong). The failure is
+entity derivation through ultra-low-precision weights — a concrete,
+serving-layer-testable claim. The arena's first challenger is exactly that
+test: an entity-memory adapter that re-surfaces the derived ID
+(`arena/adapter_entity_inject.py`).
+
 ## Run
 
 ```bash
