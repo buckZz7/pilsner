@@ -201,7 +201,11 @@ def merge_scores(scores: list[dict]) -> dict:
 
 
 def _msg_tool_calls(msg) -> int:
-    """Count tool calls in a message (field is a JSON string or list)."""
+    """Count tool calls in a message.
+
+    tau2's results.json serializes the field as a Python repr (single
+    quotes) OR JSON — try both.
+    """
     tc = msg.get("tool_calls") if isinstance(msg, dict) else getattr(msg, "tool_calls", None)
     if not tc or tc == "None":
         return 0
@@ -209,7 +213,11 @@ def _msg_tool_calls(msg) -> int:
         try:
             tc = json.loads(tc)
         except (ValueError, TypeError):
-            return 0
+            try:
+                import ast
+                tc = ast.literal_eval(tc)
+            except (ValueError, SyntaxError, TypeError):
+                return 0
     return len(tc) if isinstance(tc, (list, tuple)) else 0
 
 
