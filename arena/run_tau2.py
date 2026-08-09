@@ -27,6 +27,10 @@ Env contract (mirrors the FC harness):
   PILSNER_ENGINE        serving engine (e.g. llama.cpp, vllm; default unspecified)
   PILSNER_PARALLEL      server concurrency slots (default: unspecified;
                         speed comparisons require same parallel)
+  PILSNER_ENGINE_VERSION  serving engine build (e.g. llama.cpp git commit;
+                        default unspecified). Recorded in the receipt —
+                        engine builds change measurements (a too-old
+                        build can't load newer quant types).
   PILSNER_CTX           server context per slot (n_ctx_slot; default
                         unspecified). Recorded in the receipt — context
                         changes measurements, so it is part of the
@@ -275,6 +279,7 @@ def main() -> int:
     engine = _env("PILSNER_ENGINE", "unspecified")
     parallel = _env("PILSNER_PARALLEL", "unspecified")
     ctx = _env("PILSNER_CTX", "unspecified")
+    engine_version = _env("PILSNER_ENGINE_VERSION", "unspecified")
     user_model = _env("PILSNER_USER_MODEL", "")
     user_base_url = _env("PILSNER_USER_BASE_URL", "")
 
@@ -333,6 +338,7 @@ def main() -> int:
         "base_url": base_url,
         "reasoning": reasoning,
         "engine": engine,
+        "engine_version": engine_version,
         "parallel": parallel,
         "context": ctx,
         "wall_clock_s": round(wall_clock_s, 3),
