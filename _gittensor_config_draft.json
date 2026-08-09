@@ -1,0 +1,27 @@
+{
+  "repo": "buckZz7/pilsner",
+  "subnet": 74,
+  "trusted_label_pipeline": true,
+  "default_label_multiplier": 0.0,
+  "maintainer_cut": 0.4,
+  "label_multipliers": {
+    "pilsner:winner": 4.0,
+    "pilsner:loss": 0.0,
+    "pilsner:invalid": 0.0,
+    "pilsner:tooling": 0.05
+  },
+  "eligibility": {
+    "min_valid_merged_prs": 1,
+    "min_credibility": 0.5,
+    "max_open_pr_threshold": 2
+  },
+  "scoring": {
+    "pr_lookback_days": 7,
+    "time_decay": {
+      "grace_period_hours": 24,
+      "sigmoid_midpoint_days": 3,
+      "sigmoid_steepness": 1.0,
+      "min_multiplier": 0.05
+    }
+  }
+}

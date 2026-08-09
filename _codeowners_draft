@@ -1,0 +1,16 @@
+# CODEOWNERS (draft for Pilsner) — maintainer-owned paths
+
+# Harness and governance are maintainer-owned; entry PRs never touch these.
+arena/          @buckZz7
+eval/           @buckZz7
+kings/          @buckZz7
+.gittensor/     @buckZz7
+.github/        @buckZz7
+tests/          @buckZz7
+REVIEW.md       @buckZz7
+EVAL-TRUST.md   @buckZz7
+RULESET.md      @buckZz7
+CONTRIBUTING.md @buckZz7
+AGENTS.md       @buckZz7
+
+# Miner entries live under submissions/; no default owner beyond CI gates.

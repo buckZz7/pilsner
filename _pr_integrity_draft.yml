@@ -1,0 +1,88 @@
+name: pr-integrity
+
+on:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install ruff && ruff check .
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -r requirements.txt && python3 -m unittest discover -s tests -v
+
+  linked-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          BODY="${{ github.event.pull_request.body }}"
+          TITLE="${{ github.event.pull_request.title }}"
+          echo "$BODY $TITLE" | grep -qiE '(Fixes|Refs|Closes|Resolves)\s+#[0-9]+' \
+            || { echo "PR must reference an issue (Fixes/Refs #N)"; exit 1; }
+
+  no-ai-trailers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - run: |
+          git log ${{ github.event.pull_request.base.sha }}..HEAD --format="%B" \
+            | grep -iE 'Co-authored-by:.*(copilot|claude|gpt|cursor|codex)' && exit 1 || exit 0
+
+  max-two-open-prs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          N=$(gh pr list --author "${{ github.actor }}" --state open --limit 50 --json number --jq 'length')
+          [ "$N" -le 2 ] || { echo "max 2 open PRs (have $N)"; exit 1; }
+
+  sensitive-paths-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PERM=$(gh api "repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission" --jq .permission)
+          if [ "$PERM" != "admin" ] && [ "$PERM" != "write" ]; then
+            CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }}..HEAD)
+            echo "$CHANGED" | grep -E '^(arena/|eval/|kings/|\.gittensor/|\.github/|REVIEW\.md|EVAL-TRUST\.md|RULESET\.md)' \
+              && { echo "non-maintainer touched maintainer-owned paths"; exit 1; } || exit 0
+          fi
+
+  submission-valid:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - run: |
+          CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }}..HEAD | grep '^submissions/' || true)
+          if [ -n "$CHANGED" ]; then
+            python3 -c '
+          import json, pathlib, sys
+          ok = True
+          for p in pathlib.Path("submissions").rglob("serving.json"):
+              try:
+                  d = json.loads(p.read_text())
+                  assert d.get("reasoning", "off") == "off", "operating point must be reasoning=off"
+                  assert d.get("engine", "llama.cpp") == "llama.cpp", "engine must be the pinned engine"
+                  assert "model" in d or p.parent.joinpath("model.gguf").exists(), "weights must be present or pinned"
+              except Exception as e:
+                  print(f"invalid {p}: {e}"); ok = False
+          sys.exit(0 if ok else 1)
+          '
+          fi
