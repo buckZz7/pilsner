@@ -44,11 +44,14 @@ hf download prism-ml/Bonsai-27B-gguf Bonsai-27B-Q1_0.gguf --local-dir bonsai-1bi
 hf download prism-ml/Ternary-Bonsai-27B-gguf Ternary-Bonsai-27B-Q2_0.gguf --local-dir bonsai-ternary
 hf download Smoffyy/Qwen3.6-27B-Instruct-Revised-GGUF Qwen3.6-27B-Revised-q8_0.gguf --local-dir qwen36-q8
 hf download unsloth/Qwen3-4B-GGUF Qwen3-4B-Q8_0.gguf --local-dir qwen3-4b
+# IQ1 cliff-pinning rungs (mradermacher .i1- naming convention)
+hf download mradermacher/Qwen3.6-27B-i1-GGUF --include "*.i1-IQ1_S*" --local-dir qwen36-iq1s
+hf download mradermacher/Qwen3.6-27B-i1-GGUF --include "*.i1-IQ1_M*" --local-dir qwen36-iq1m
 ls -la /root/models/*/
 
-echo "=== [7/7] 2-bit rung (quantize Q8 -> IQ2_XXS) ==="
+echo "=== [7/7] 2-bit rung (pre-made UD-IQ2_XXS; self-quantize from q8_0 is disabled) ==="
 mkdir -p /root/models/qwen36-iq2xxs
-/root/llama.cpp/build/bin/llama-quantize /root/models/qwen36-q8/Qwen3.6-27B-Revised-q8_0.gguf /root/models/qwen36-iq2xxs/Qwen3.6-27B-IQ2_XXS.gguf IQ2_XXS 2>&1 | tail -3
+hf download unsloth/Qwen3.6-27B-GGUF --include "*UD-IQ2_XXS*" --local-dir /root/models/qwen36-iq2xxs
 ls -la /root/models/qwen36-iq2xxs/
 
 echo "SETUP_DONE"
