@@ -1,8 +1,29 @@
 {
   "board_version": 1,
-  "updated": "2026-08-09T13:28:24.176231+00:00",
-  "king": "qwen36-q2kxl",
+  "updated": "2026-08-09T20:05:32.884772+00:00",
+  "king": "qwen36-iq2xxs",
   "entries": [
+    {
+      "model": "qwen36-iq2xxs",
+      "success_rate": 1.0,
+      "n_success": 3,
+      "n_scored": 3,
+      "ci95": [
+        0.4385,
+        1.0
+      ],
+      "mean_reward": 1.0,
+      "wall_clock_s": 38.273,
+      "reasoning": "off",
+      "engine": "llama.cpp",
+      "domain": "marketplace",
+      "num_trials": 1,
+      "receipt": "data/simulations/20260809_200450_marketplace_llm_agent_qwen36-iq2xxs_user_simulator_qwen36-iq2xxs/results.json",
+      "tau2_commit": "668d3bcd13",
+      "results_sha256": "16c74e0f32675ff3",
+      "timestamp": "2026-08-09T20:05:23.405421+00:00",
+      "rank": 1
+    },
     {
       "model": "qwen36-q2kxl",
       "success_rate": 0.62,
@@ -22,7 +43,7 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "ba75eb1ece42a640",
       "timestamp": "2026-08-09T01:59:11.995662+00:00",
-      "rank": 1
+      "rank": 2
     },
     {
       "model": "qwen36-q8",
@@ -43,7 +64,7 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "f8abd5d31eeb6ded",
       "timestamp": "2026-08-09T03:27:46.023774+00:00",
-      "rank": 2
+      "rank": 3
     },
     {
       "model": "qwen36-iq2xxs",
@@ -64,7 +85,7 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "5378d2222de875c2",
       "timestamp": "2026-08-09T01:19:25.936953+00:00",
-      "rank": 3
+      "rank": 4
     },
     {
       "model": "qwen3-4b",
@@ -85,7 +106,7 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "0c7824adba6a3efc",
       "timestamp": "2026-08-09T02:24:33.018973+00:00",
-      "rank": 4
+      "rank": 5
     },
     {
       "model": "bonsai-1bit",
@@ -106,7 +127,49 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "d132a31b7d6b8cf3",
       "timestamp": "2026-08-09T00:37:29.090597+00:00",
-      "rank": 5
+      "rank": 6
+    },
+    {
+      "model": "qwen36-iq1m",
+      "success_rate": 0.12,
+      "n_success": 6,
+      "n_scored": 50,
+      "ci95": [
+        0.0562,
+        0.2381
+      ],
+      "mean_reward": 0.12,
+      "wall_clock_s": 3698.859,
+      "reasoning": "off",
+      "engine": "llama.cpp",
+      "domain": "airline",
+      "num_trials": 1,
+      "receipt": "data/simulations/20260809_160728_airline_llm_agent_qwen36-iq1m_user_simulator_qwen36-iq1m/results.json",
+      "tau2_commit": "668d3bcd13",
+      "results_sha256": "61ac2a3a88bb9537",
+      "timestamp": "2026-08-09T17:09:06.136920+00:00",
+      "rank": 7
+    },
+    {
+      "model": "qwen36-iq1s",
+      "success_rate": 0.1,
+      "n_success": 5,
+      "n_scored": 50,
+      "ci95": [
+        0.0435,
+        0.2136
+      ],
+      "mean_reward": 0.1,
+      "wall_clock_s": 5593.637,
+      "reasoning": "off",
+      "engine": "llama.cpp",
+      "domain": "airline",
+      "num_trials": 1,
+      "receipt": "data/simulations/20260809_143353_airline_llm_agent_qwen36-iq1s_user_simulator_qwen36-iq1s/results.json",
+      "tau2_commit": "668d3bcd13",
+      "results_sha256": "c2be68dab6ce7f01",
+      "timestamp": "2026-08-09T16:07:03.320641+00:00",
+      "rank": 8
     }
   ]
 }
