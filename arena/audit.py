@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import sys
+from pathlib import Path
 
 REQUIRED = [
     "model", "base_url", "reasoning", "engine", "parallel", "context",
@@ -27,12 +28,36 @@ COMPARABLE = [
 
 
 def audit(path: str) -> tuple[list[str], dict]:
-    r = json.load(open(path))
+    with open(path) as f:
+        r = json.load(f)
     model = r.get("model", path)
     problems = []
     for f in REQUIRED:
         if f not in r or r.get(f) in (None, "", "unspecified"):
             problems.append(f"missing field: {f}")
+    # internal consistency: the score fields must agree with per_task
+    pt = r.get("per_task") or []
+    if pt:
+        wins = sum(1 for p in pt if p.get("reward", 0))
+        rate = wins / len(pt)
+        if abs(rate - float(r.get("success_rate", -1))) > 1e-9:
+            problems.append(f"success_rate {r.get('success_rate')} != "
+                            f"per_task {rate:.3f} ({wins}/{len(pt)})")
+        if int(r.get("n_success", -1)) != wins:
+            problems.append(f"n_success {r.get('n_success')} != per_task wins {wins}")
+        if int(r.get("n_scored", -1)) != len(pt):
+            problems.append(f"n_scored {r.get('n_scored')} != per_task rows {len(pt)}")
+    # results_sha256: verify against the raw results file when present.
+    # A missing raw file is NOT a failure (raws live on the eval box /
+    # archives); a PRESENT file that mismatches IS one.
+    rf = r.get("results_file")
+    if rf and rf != "unspecified":
+        import hashlib
+        p = Path(rf)
+        if p.exists():
+            h = hashlib.sha256(p.read_bytes()).hexdigest()
+            if h != r.get("results_sha256"):
+                problems.append("results_sha256 mismatch with raw file")
     return problems, {k: r.get(k) for k in COMPARABLE}
 
 
