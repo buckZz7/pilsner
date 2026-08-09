@@ -83,6 +83,16 @@ def _replay_results(receipt: dict, t2_dir: Path) -> tuple[list[dict], list[str]]
     failures: list[str] = []
     per_task: list[dict] = []
     adapter = TypeAdapter(Message)
+
+    def _env_for(domain: str):
+        """Resolve the environment of the domain that produced the sim —
+        the arena must replay through the CURRENT domain code, whatever it is."""
+        import importlib
+        mod = importlib.import_module(f"tau2.domains.{domain}.environment")
+        return mod.get_environment()
+
+    domain = (receipt.get("domain") or "marketplace").split("+")[0]
+    env = _env_for(domain)
     for rel in files:
         p = t2_dir / rel
         if not p.exists():
@@ -100,8 +110,6 @@ def _replay_results(receipt: dict, t2_dir: Path) -> tuple[list[dict], list[str]]
             except Exception as e:  # noqa: BLE001
                 failures.append(f"task {sim.get('task_id')}: bad initial_state: {e}")
                 continue
-            from tau2.domains.marketplace.environment import get_environment
-            env = get_environment()
             msgs = [adapter.validate_python(m) for m in (sim.get("messages") or [])]
             try:
                 env.set_state(init.initialization_data, [], msgs, strict=False)

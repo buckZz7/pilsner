@@ -363,7 +363,8 @@ def main() -> int:
                   "PILSNER_USER_BASE_URL)", file=sys.stderr)
             return 7
         cmd = [sys.executable, "-m", "benchbrew", "--seed", benchbrew_seed,
-               "--tasks", str(num_tasks), "--emit", str(t2_dir), "--quiet"]
+               "--tasks", str(num_tasks), "--domain", domains[0],
+               "--emit", str(t2_dir), "--quiet"]
         print("benchbrew:", " ".join(cmd))
         proc = subprocess.run(cmd, cwd=benchbrew_dir, capture_output=True,
                               text=True)

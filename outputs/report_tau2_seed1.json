@@ -1,432 +1,135 @@
 {
   "schema": "pilsner-tau2-receipt/v1",
-  "timestamp": "2026-08-09T03:27:46.023774+00:00",
+  "timestamp": "2026-08-09T22:45:41.175309+00:00",
   "arena": "pilsner",
   "instrument": "tau2-bench",
-  "domain": "airline",
+  "benchbrew": {
+    "spec_version": "0.5.0",
+    "spec_sha256": "f4d93cc34cef188a",
+    "seed": "61",
+    "seed_source": "operator",
+    "n_tasks": "40",
+    "bundle_sha256": "d798026e5d742d12513a83eac16e148f9a6f8cc6562d2b9a92ece99061c71bcc"
+  },
+  "domain": "local_services",
   "task_split": "base",
-  "num_tasks": 50,
+  "task_sample": "first",
+  "sampled_task_ids": {
+    "local_services": "[\"0\", \"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\"]"
+  },
+  "num_tasks": 40,
   "num_trials": 1,
-  "max_steps": 50,
-  "max_steps_seconds": 600,
+  "max_steps": 25,
+  "max_steps_seconds": null,
   "seed_slot": 1,
-  "model": "qwen36-q8",
-  "base_url": "http://127.0.0.1:8000/v1",
-  "reasoning": "off",
-  "engine": "llama.cpp",
-  "engine_version": "7ba604f1c",
-  "parallel": "1",
-  "context": "16384",
-  "wall_clock_s": 3786.889,
-  "success_rate": 0.62,
-  "mean_reward": 0.62,
-  "n_success": 31,
-  "n_scored": 50,
+  "model": "qwen36-iq2xxs",
+  "base_url": "http://87.197.110.78:41176/v1",
+  "reasoning": "unspecified",
+  "engine": "unspecified",
+  "engine_version": "unspecified",
+  "model_sha256": "unspecified",
+  "gpu_clock": "unspecified",
+  "parallel": "unspecified",
+  "context": "unspecified",
+  "wall_clock_s": 238.645,
+  "success_rate": 0.5,
+  "mean_reward": 0.5,
+  "n_success": 4,
+  "n_scored": 8,
   "per_task": [
     {
       "task_id": "0",
-      "reward": 1.0,
-      "tool_calls": 1,
+      "reward": 0.0,
+      "tool_calls": 0,
       "tool_errors": 0,
       "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "1",
-      "reward": 1.0,
-      "tool_calls": 7,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "3",
-      "reward": 1.0,
-      "tool_calls": 4,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
+      "domain": "local_services"
     },
     {
       "task_id": "2",
-      "reward": 0.0,
-      "tool_calls": 12,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "6",
       "reward": 1.0,
       "tool_calls": 2,
       "tool_errors": 0,
       "termination": "user_stop",
-      "domain": "airline"
+      "domain": "local_services"
     },
     {
       "task_id": "4",
       "reward": 1.0,
       "tool_calls": 7,
-      "tool_errors": 0,
+      "tool_errors": 1,
       "termination": "user_stop",
-      "domain": "airline"
+      "domain": "local_services"
     },
     {
-      "task_id": "7",
+      "task_id": "1",
       "reward": 0.0,
-      "tool_calls": 11,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "8",
-      "reward": 1.0,
-      "tool_calls": 9,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
+      "tool_calls": 12,
+      "tool_errors": 6,
+      "termination": "max_steps",
+      "domain": "local_services"
     },
     {
       "task_id": "5",
-      "reward": 0.0,
-      "tool_calls": 5,
-      "tool_errors": 0,
-      "termination": "max_steps",
-      "domain": "airline"
-    },
-    {
-      "task_id": "9",
       "reward": 1.0,
-      "tool_calls": 8,
+      "tool_calls": 1,
       "tool_errors": 0,
       "termination": "user_stop",
-      "domain": "airline"
+      "domain": "local_services"
     },
     {
-      "task_id": "10",
-      "reward": 0.0,
-      "tool_calls": 10,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "11",
-      "reward": 1.0,
-      "tool_calls": 7,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "12",
-      "reward": 0.0,
-      "tool_calls": 5,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "13",
-      "reward": 1.0,
-      "tool_calls": 5,
-      "tool_errors": 1,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "15",
-      "reward": 1.0,
-      "tool_calls": 7,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "16",
-      "reward": 1.0,
-      "tool_calls": 5,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "17",
-      "reward": 0.0,
-      "tool_calls": 8,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "19",
-      "reward": 1.0,
-      "tool_calls": 3,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "18",
-      "reward": 0.0,
-      "tool_calls": 12,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "14",
-      "reward": 0.0,
-      "tool_calls": 3,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "22",
-      "reward": 0.0,
-      "tool_calls": 10,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "21",
-      "reward": 1.0,
-      "tool_calls": 14,
-      "tool_errors": 1,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "24",
+      "task_id": "3",
       "reward": 0.0,
       "tool_calls": 2,
       "tool_errors": 0,
       "termination": "user_stop",
-      "domain": "airline"
+      "domain": "local_services"
     },
     {
-      "task_id": "25",
-      "reward": 1.0,
-      "tool_calls": 5,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "26",
+      "task_id": "7",
       "reward": 1.0,
       "tool_calls": 2,
       "tool_errors": 0,
       "termination": "user_stop",
-      "domain": "airline"
+      "domain": "local_services"
     },
     {
-      "task_id": "20",
-      "reward": 1.0,
-      "tool_calls": 7,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "28",
-      "reward": 1.0,
-      "tool_calls": 2,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "27",
-      "reward": 1.0,
-      "tool_calls": 11,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "29",
-      "reward": 0.0,
-      "tool_calls": 6,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "30",
-      "reward": 1.0,
-      "tool_calls": 7,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "31",
-      "reward": 1.0,
-      "tool_calls": 5,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "23",
-      "reward": 1.0,
-      "tool_calls": 10,
-      "tool_errors": 1,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "32",
-      "reward": 1.0,
-      "tool_calls": 5,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "34",
-      "reward": 1.0,
-      "tool_calls": 8,
-      "tool_errors": 2,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "33",
-      "reward": 0.0,
-      "tool_calls": 6,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "36",
-      "reward": 1.0,
-      "tool_calls": 3,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "35",
-      "reward": 0.0,
-      "tool_calls": 5,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "37",
-      "reward": 1.0,
-      "tool_calls": 8,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "40",
-      "reward": 1.0,
-      "tool_calls": 2,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "38",
+      "task_id": "6",
       "reward": 0.0,
       "tool_calls": 9,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "41",
-      "reward": 1.0,
-      "tool_calls": 8,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "39",
-      "reward": 0.0,
-      "tool_calls": 14,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "42",
-      "reward": 0.0,
-      "tool_calls": 12,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "43",
-      "reward": 0.0,
-      "tool_calls": 8,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "45",
-      "reward": 1.0,
-      "tool_calls": 4,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "46",
-      "reward": 1.0,
-      "tool_calls": 3,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "44",
-      "reward": 0.0,
-      "tool_calls": 18,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "47",
-      "reward": 0.0,
-      "tool_calls": 2,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "48",
-      "reward": 1.0,
-      "tool_calls": 3,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
-    },
-    {
-      "task_id": "49",
-      "reward": 1.0,
-      "tool_calls": 2,
-      "tool_errors": 0,
-      "termination": "user_stop",
-      "domain": "airline"
+      "tool_errors": 3,
+      "termination": "max_steps",
+      "domain": "local_services"
     }
   ],
   "tau2_git_commit": "668d3bcd135c02aa3438f987ef45735b7c163ee3",
-  "agent_llm": "openai/qwen36-q8",
-  "user_llm": "openai/qwen36-q8",
-  "results_file": "data/simulations/20260809_022441_airline_llm_agent_qwen36-q8_user_simulator_qwen36-q8/results.json",
-  "results_sha256": "f8abd5d31eeb6ded1f42d04206ece0a287369875affd902491001b3d3ebf8075"
+  "agent_llm": "openai/qwen36-iq2xxs",
+  "user_llm": "openai/qwen3-4b",
+  "results_file": "data/simulations/20260809_224147_local_services_llm_agent_qwen36-iq2xxs_user_simulator_qwen3-4b/results.json",
+  "results_sha256": "c79817f2c115e59f65a8917f6a4f6088a42ab57b0815c53ffe7524113dba2f37",
+  "verified": false,
+  "verification": {
+    "checks": {
+      "results_sha256": "c79817f2c115e59f65a8917f6a4f6088a42ab57b0815c53ffe7524113dba2f37",
+      "bundle": [
+        "bundle regenerated: sha matches d798026e5d74\u2026"
+      ],
+      "replay": {
+        "n": 0,
+        "ok": 0,
+        "rate": null
+      }
+    },
+    "failures": [
+      "task 0: replay failed: 3 validation errors for MarketplaceDB\nbookings\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'b1': {'canceled_at_tick..._net': 80, 'total': 92}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden\ninvoices\n  Extra inputs are not permitted [type=extra_forbidden, input_value={}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden\nservices\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'s1': {'category': 'clea...'Delivery', 'rate': 25}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden",
+      "task 2: replay failed: 3 validation errors for MarketplaceDB\nbookings\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'b1': {'canceled_at_tick...et': 110, 'total': 126}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden\ninvoices\n  Extra inputs are not permitted [type=extra_forbidden, input_value={}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden\nservices\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'s1': {'category': 'clea...'Delivery', 'rate': 25}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden",
+      "task 4: replay failed: 3 validation errors for MarketplaceDB\nbookings\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'b1': {'canceled_at_tick..._net': 80, 'total': 92}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden\ninvoices\n  Extra inputs are not permitted [type=extra_forbidden, input_value={}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden\nservices\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'s1': {'category': 'clea...'Delivery', 'rate': 25}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden",
+      "task 1: replay failed: 3 validation errors for MarketplaceDB\nbookings\n  Extra inputs are not permitted [type=extra_forbidden, input_value={}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden\ninvoices\n  Extra inputs are not permitted [type=extra_forbidden, input_value={}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden\nservices\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'s1': {'category': 'clea...'Delivery', 'rate': 25}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden",
+      "task 5: replay failed: 3 validation errors for MarketplaceDB\nbookings\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'b1': {'canceled_at_tick...et': 100, 'total': 115}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden\ninvoices\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'i1': {'amount': 115, 'b... 'status': 'submitted'}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden\nservices\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'s1': {'category': 'clea...'Delivery', 'rate': 25}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden",
+      "task 3: replay failed: 3 validation errors for MarketplaceDB\nbookings\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'b1': {'canceled_at_tick..._net': 80, 'total': 92}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden\ninvoices\n  Extra inputs are not permitted [type=extra_forbidden, input_value={}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden\nservices\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'s1': {'category': 'clea...'Delivery', 'rate': 25}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden",
+      "task 7: replay failed: 3 validation errors for MarketplaceDB\nbookings\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'b1': {'canceled_at_tick..._net': 80, 'total': 92}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden\ninvoices\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'i1': {'amount': 92, 'bo... 'status': 'submitted'}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden\nservices\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'s1': {'category': 'clea...'Delivery', 'rate': 25}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden",
+      "task 6: replay failed: 3 validation errors for MarketplaceDB\nbookings\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'b1': {'canceled_at_tick..._net': 80, 'total': 92}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden\ninvoices\n  Extra inputs are not permitted [type=extra_forbidden, input_value={}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden\nservices\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'s1': {'category': 'clea...'Delivery', 'rate': 25}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden",
+      "no sims carried assertion rewards; nothing re-scored"
+    ]
+  }
 }
