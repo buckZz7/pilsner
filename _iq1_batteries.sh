@@ -52,6 +52,6 @@ run_iq1() {
   sleep 3
 }
 
-run_iq1 qwen36-iq1s /root/models/qwen36-iq1s/Qwen3.6-27B-IQ1_S.gguf 7
-run_iq1 qwen36-iq1m /root/models/qwen36-iq1m/Qwen3.6-27B-IQ1_M.gguf 8
+run_iq1 qwen36-iq1s /root/models/qwen36-iq1s/Qwen3.6-27B.i1-IQ1_S.gguf 7
+run_iq1 qwen36-iq1m /root/models/qwen36-iq1m/Qwen3.6-27B.i1-IQ1_M.gguf 8
 echo "IQ1_BATTERIES_DONE"
