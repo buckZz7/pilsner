@@ -1,0 +1,429 @@
+{
+  "schema": "pilsner-tau2-receipt/v1",
+  "timestamp": "2026-08-09T01:59:11.995662+00:00",
+  "arena": "pilsner",
+  "instrument": "tau2-bench",
+  "domain": "airline",
+  "task_split": "base",
+  "num_tasks": 50,
+  "num_trials": 1,
+  "max_steps": 50,
+  "max_steps_seconds": 600,
+  "seed_slot": 6,
+  "model": "qwen36-q2kxl",
+  "base_url": "http://127.0.0.1:8000/v1",
+  "reasoning": "off",
+  "engine": "llama.cpp",
+  "parallel": "2",
+  "context": "16384",
+  "wall_clock_s": 2379.949,
+  "success_rate": 0.62,
+  "mean_reward": 0.62,
+  "n_success": 31,
+  "n_scored": 50,
+  "per_task": [
+    {
+      "task_id": "0",
+      "reward": 1.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "3",
+      "reward": 1.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "1",
+      "reward": 1.0,
+      "tool_calls": 7,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "2",
+      "reward": 0.0,
+      "tool_calls": 23,
+      "tool_errors": 0,
+      "termination": "max_steps",
+      "domain": "airline"
+    },
+    {
+      "task_id": "5",
+      "reward": 0.0,
+      "tool_calls": 6,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "4",
+      "reward": 1.0,
+      "tool_calls": 9,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "6",
+      "reward": 1.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "9",
+      "reward": 1.0,
+      "tool_calls": 7,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "7",
+      "reward": 0.0,
+      "tool_calls": 13,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "8",
+      "reward": 0.0,
+      "tool_calls": 13,
+      "tool_errors": 2,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "11",
+      "reward": 0.0,
+      "tool_calls": 6,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "10",
+      "reward": 0.0,
+      "tool_calls": 13,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "12",
+      "reward": 1.0,
+      "tool_calls": 5,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "13",
+      "reward": 1.0,
+      "tool_calls": 4,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "16",
+      "reward": 1.0,
+      "tool_calls": 7,
+      "tool_errors": 1,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "15",
+      "reward": 1.0,
+      "tool_calls": 7,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "17",
+      "reward": 1.0,
+      "tool_calls": 8,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "18",
+      "reward": 0.0,
+      "tool_calls": 12,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "19",
+      "reward": 0.0,
+      "tool_calls": 6,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "20",
+      "reward": 1.0,
+      "tool_calls": 4,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "22",
+      "reward": 1.0,
+      "tool_calls": 8,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "21",
+      "reward": 1.0,
+      "tool_calls": 11,
+      "tool_errors": 1,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "25",
+      "reward": 1.0,
+      "tool_calls": 5,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "26",
+      "reward": 1.0,
+      "tool_calls": 4,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "24",
+      "reward": 0.0,
+      "tool_calls": 18,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "28",
+      "reward": 1.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "27",
+      "reward": 0.0,
+      "tool_calls": 12,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "23",
+      "reward": 0.0,
+      "tool_calls": 7,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "31",
+      "reward": 1.0,
+      "tool_calls": 4,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "30",
+      "reward": 1.0,
+      "tool_calls": 4,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "29",
+      "reward": 0.0,
+      "tool_calls": 8,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "32",
+      "reward": 1.0,
+      "tool_calls": 6,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "33",
+      "reward": 0.0,
+      "tool_calls": 6,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "36",
+      "reward": 1.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "35",
+      "reward": 1.0,
+      "tool_calls": 5,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "34",
+      "reward": 1.0,
+      "tool_calls": 5,
+      "tool_errors": 1,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "37",
+      "reward": 1.0,
+      "tool_calls": 8,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "40",
+      "reward": 1.0,
+      "tool_calls": 3,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "38",
+      "reward": 1.0,
+      "tool_calls": 10,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "39",
+      "reward": 0.0,
+      "tool_calls": 14,
+      "tool_errors": 1,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "41",
+      "reward": 1.0,
+      "tool_calls": 9,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "43",
+      "reward": 0.0,
+      "tool_calls": 8,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "42",
+      "reward": 0.0,
+      "tool_calls": 14,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "46",
+      "reward": 1.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "45",
+      "reward": 1.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "48",
+      "reward": 1.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "44",
+      "reward": 0.0,
+      "tool_calls": 24,
+      "tool_errors": 0,
+      "termination": "max_steps",
+      "domain": "airline"
+    },
+    {
+      "task_id": "49",
+      "reward": 1.0,
+      "tool_calls": 3,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "airline"
+    },
+    {
+      "task_id": "47",
+      "reward": 0.0,
+      "tool_calls": 3,
+      "tool_errors": 0,
+      "termination": "max_steps",
+      "domain": "airline"
+    },
+    {
+      "task_id": "14",
+      "reward": 0.0,
+      "no_result": true,
+      "domain": "airline"
+    }
+  ],
+  "tau2_git_commit": "668d3bcd135c02aa3438f987ef45735b7c163ee3",
+  "agent_llm": "openai/qwen36-q2kxl",
+  "user_llm": "openai/qwen36-q2kxl",
+  "results_file": "data/simulations/20260809_011934_airline_llm_agent_qwen36-q2kxl_user_simulator_qwen36-q2kxl/results.json",
+  "results_sha256": "ba75eb1ece42a64081883da15339644b951d322a4c9a7900ca49278d6c06ab5b"
+}

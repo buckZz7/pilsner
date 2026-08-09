@@ -1,4 +1,6 @@
-outputs/
+outputs/*
+!outputs/report_tau2_*.json
+!outputs/leaderboard.json
 __pycache__/
 *.pyc
 .coverage

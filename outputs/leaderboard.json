@@ -1,0 +1,49 @@
+{
+  "board_version": 1,
+  "updated": "2026-08-09T01:51:56.819404+00:00",
+  "king": "qwen36-iq2xxs",
+  "entries": [
+    {
+      "model": "qwen36-iq2xxs",
+      "success_rate": 0.54,
+      "n_success": 27,
+      "n_scored": 50,
+      "ci95": [
+        0.404,
+        0.6703
+      ],
+      "mean_reward": 0.54,
+      "wall_clock_s": 2505.658,
+      "reasoning": "off",
+      "engine": "llama.cpp",
+      "domain": "airline",
+      "num_trials": 1,
+      "receipt": "data/simulations/20260809_003742_airline_llm_agent_qwen36-iq2xxs_user_simulator_qwen36-iq2xxs/results.json",
+      "tau2_commit": "668d3bcd13",
+      "results_sha256": "5378d2222de875c2",
+      "timestamp": "2026-08-09T01:19:25.936953+00:00",
+      "rank": 1
+    },
+    {
+      "model": "bonsai-1bit",
+      "success_rate": 0.16,
+      "n_success": 8,
+      "n_scored": 50,
+      "ci95": [
+        0.0834,
+        0.2851
+      ],
+      "mean_reward": 0.16,
+      "wall_clock_s": 2387.589,
+      "reasoning": "off",
+      "engine": "llama.cpp",
+      "domain": "airline",
+      "num_trials": 1,
+      "receipt": "data/simulations/20260808_235743_airline_llm_agent_bonsai-1bit_user_simulator_bonsai-1bit/results.json",
+      "tau2_commit": "668d3bcd13",
+      "results_sha256": "d132a31b7d6b8cf3",
+      "timestamp": "2026-08-09T00:37:29.090597+00:00",
+      "rank": 2
+    }
+  ]
+}
