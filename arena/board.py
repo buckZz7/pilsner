@@ -66,11 +66,12 @@ def main() -> int:
         return 1
     receipts = [json.load(open(p)) for p in paths]
     board = build_board(receipts)
-    print(f"king: {board['king']}")
+    print(f"king: {board['king']}  (kings are per-lane; compare within a domain)")
     for e in board["entries"]:
         print(f"  #{e['rank']} {e['model']:<16} {e['success_rate']:.3f} "
               f"[{e['ci95'][0]:.3f}-{e['ci95'][1]:.3f}] wall={e['wall_clock_s']:.0f}s "
-              f"({e['n_success']}/{e['n_scored']}) {e['reasoning']}")
+              f"({e['n_success']}/{e['n_scored']}) {e['reasoning']} "
+              f"[{e.get('domain', '?')}]")
     if write:
         target = out_dir / "leaderboard.json"
         target.write_text(json.dumps(board, indent=2))
