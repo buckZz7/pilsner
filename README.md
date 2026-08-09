@@ -98,14 +98,22 @@ round. First ladder pins (all served via llama.cpp, thinking off):
 
 - near-full-precision: `Smoffyy/Qwen3.6-27B-Instruct-Revised-GGUF` q8_0
 - 1-bit incumbent: `prism-ml/Bonsai-27B-gguf` Q1_0 (3.8GB)
-- ternary incumbent: `prism-ml/Ternary-Bonsai-27B-gguf` Q2_0 (5.9GB)
 - 2-bit flavor A: `unsloth/Qwen3.6-27B-GGUF` UD-IQ2_XXS (9.4GB)
 - 2-bit flavor B: `unsloth/Qwen3.6-27B-GGUF` UD-Q2_K_XL (11.8GB)
 - small dense: `unsloth/Qwen3-4B-GGUF` Q8_0 (4.3GB)
 
-The scored battery runs 4 trials x 50 tasks (200 sims) — at 1 trial the
->2% rule is noise (CI ~+/-16%); at 200 sims the CI is ~+/-8%. The king
-is verified at the scored battery size, never the survey size.
+**Ternary rung: unmeasurable on the pinned engine (2026-08-09).**
+`prism-ml/Ternary-Bonsai-27B-gguf` (both Q2_0 and PQ2_0 variants) uses a
+tensor layout defined in PrismML's custom llama.cpp fork — mainline
+(even latest) refuses the file ("failed to read tensor data"). The
+arena measures what its pinned engine can serve; a fork-locked artifact
+is disclosed as unmeasurable, not scored. This is the submission
+spec's engine-loadability rule in action.
+
+The scored battery runs 2 trials x 50 tasks x 2 domains (airline +
+retail = 200 sims) — at 1 trial the >2% rule is noise (CI ~+/-16%);
+at 200 sims the CI is ~+/-8%. The king is verified at the scored
+battery size, never the survey size.
 
 ## Serving rules (learned the hard way)
 
