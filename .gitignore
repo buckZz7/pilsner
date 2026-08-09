@@ -4,3 +4,13 @@ outputs/*
 __pycache__/
 *.pyc
 .coverage
+
+# session one-off diagnostics (keep on disk, not in git)
+_check_*.py
+_compare_tools.py
+_diag_*.py
+_dump_tc.py
+_gguf_probe.py
+_inspect_sim.py
+_split_check.py
+_verify_regex.py
