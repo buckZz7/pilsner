@@ -29,7 +29,13 @@ def load(path: Path) -> dict:
 
 
 def battery_key(r: dict) -> tuple:
-    """Identity of the battery a receipt was measured on."""
+    """Identity of the battery a receipt was measured on.
+
+    Includes engine_version: the ternary bug proved builds change
+    measurements (a too-old llama.cpp can't load newer quant types),
+    so two entries measured on different engine builds are NOT the
+    same battery.
+    """
     return (
         r.get("domain"),
         r.get("num_tasks"),
@@ -37,6 +43,7 @@ def battery_key(r: dict) -> tuple:
         r.get("task_split"),
         r.get("reasoning"),
         r.get("engine"),
+        r.get("engine_version"),
         r.get("parallel"),
         r.get("context"),
         r.get("user_llm"),
