@@ -1,6 +1,6 @@
 {
   "board_version": 2,
-  "updated": "2026-08-09T23:27:12.406743+00:00",
+  "updated": "2026-08-09T23:41:46.668691+00:00",
   "king": "qwen36-iq2xxs [local_services]",
   "entries": [
     {
@@ -29,6 +29,30 @@
     },
     {
       "model": "qwen36-iq2xxs",
+      "success_rate": 0.375,
+      "n_success": 15,
+      "n_scored": 40,
+      "ci95": [
+        0.2422,
+        0.5297
+      ],
+      "mean_reward": 0.375,
+      "wall_clock_s": 844.5,
+      "reasoning": "unspecified",
+      "engine": "unspecified",
+      "domain": "personal_finance",
+      "num_trials": 1,
+      "n_receipts": 1,
+      "receipts": [
+        null
+      ],
+      "tau2_commit": "668d3bcd13",
+      "results_sha256": "643ca39783db04cd",
+      "timestamp": "2026-08-09T23:41:33.206584+00:00",
+      "rank": 2
+    },
+    {
+      "model": "qwen36-iq2xxs",
       "success_rate": 0.25,
       "n_success": 2,
       "n_scored": 8,
@@ -49,7 +73,7 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "837f471403855a52",
       "timestamp": "2026-08-09T20:43:39.107859+00:00",
-      "rank": 2
+      "rank": 3
     }
   ]
 }
