@@ -1,8 +1,50 @@
 {
   "board_version": 1,
-  "updated": "2026-08-09T01:51:56.819404+00:00",
-  "king": "qwen36-iq2xxs",
+  "updated": "2026-08-09T13:28:24.176231+00:00",
+  "king": "qwen36-q2kxl",
   "entries": [
+    {
+      "model": "qwen36-q2kxl",
+      "success_rate": 0.62,
+      "n_success": 31,
+      "n_scored": 50,
+      "ci95": [
+        0.4815,
+        0.7414
+      ],
+      "mean_reward": 0.62,
+      "wall_clock_s": 2379.949,
+      "reasoning": "off",
+      "engine": "llama.cpp",
+      "domain": "airline",
+      "num_trials": 1,
+      "receipt": "data/simulations/20260809_011934_airline_llm_agent_qwen36-q2kxl_user_simulator_qwen36-q2kxl/results.json",
+      "tau2_commit": "668d3bcd13",
+      "results_sha256": "ba75eb1ece42a640",
+      "timestamp": "2026-08-09T01:59:11.995662+00:00",
+      "rank": 1
+    },
+    {
+      "model": "qwen36-q8",
+      "success_rate": 0.62,
+      "n_success": 31,
+      "n_scored": 50,
+      "ci95": [
+        0.4815,
+        0.7414
+      ],
+      "mean_reward": 0.62,
+      "wall_clock_s": 3786.889,
+      "reasoning": "off",
+      "engine": "llama.cpp",
+      "domain": "airline",
+      "num_trials": 1,
+      "receipt": "data/simulations/20260809_022441_airline_llm_agent_qwen36-q8_user_simulator_qwen36-q8/results.json",
+      "tau2_commit": "668d3bcd13",
+      "results_sha256": "f8abd5d31eeb6ded",
+      "timestamp": "2026-08-09T03:27:46.023774+00:00",
+      "rank": 2
+    },
     {
       "model": "qwen36-iq2xxs",
       "success_rate": 0.54,
@@ -22,7 +64,28 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "5378d2222de875c2",
       "timestamp": "2026-08-09T01:19:25.936953+00:00",
-      "rank": 1
+      "rank": 3
+    },
+    {
+      "model": "qwen3-4b",
+      "success_rate": 0.18,
+      "n_success": 9,
+      "n_scored": 50,
+      "ci95": [
+        0.0977,
+        0.308
+      ],
+      "mean_reward": 0.18,
+      "wall_clock_s": 642.243,
+      "reasoning": "off",
+      "engine": "llama.cpp",
+      "domain": "airline",
+      "num_trials": 1,
+      "receipt": "data/simulations/20260809_021352_airline_llm_agent_qwen3-4b_user_simulator_qwen3-4b/results.json",
+      "tau2_commit": "668d3bcd13",
+      "results_sha256": "0c7824adba6a3efc",
+      "timestamp": "2026-08-09T02:24:33.018973+00:00",
+      "rank": 4
     },
     {
       "model": "bonsai-1bit",
@@ -43,7 +106,7 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "d132a31b7d6b8cf3",
       "timestamp": "2026-08-09T00:37:29.090597+00:00",
-      "rank": 2
+      "rank": 5
     }
   ]
 }
