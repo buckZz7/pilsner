@@ -2,8 +2,8 @@
 
 Execution-verified agent eval for ultra-compressed 27B-class models on one
 RTX 5090. A fixed-king arena: challengers serve their stack, the arena runs
-the same external task battery against every entry on the same box, and the
-label is a pure function of the measured result.
+the same task battery against every entry on the same box, and the label is
+a pure function of the measured result.
 
 The repo is base-agnostic: it talks to any OpenAI-compatible endpoint
 (vLLM / llama.cpp server / SGLang) and never touches weights. Any model —
@@ -29,40 +29,67 @@ or any new base release — plugs in with a config change, not a code change.
 1. **Size gate** — runs on one RTX 5090 within 32GB (weights + KV cache),
    measured on the eval box.
 2. **Quality floor** — scored battery success rate beats the king by >2%
-   (ratchet). The scored instrument is external (τ2-bench, MIT, Sierra
-   Research): execution-verified agent tasks where the final environment
-   state decides success. No judge anywhere.
+   (ratchet). The scored instrument is BenchBrew: execution-verified agent
+   tasks where the final environment state decides success. No judge
+   anywhere — the oracle is spec-derived DB-state predicates.
 3. **Speed tier** — time-to-task completion above the quality floor.
+
+## The instrument: BenchBrew, not a static battery
+
+The scored battery is **regenerated per evaluation** from a public seed:
+`(spec, seed)` → a fresh task bundle, emitted into τ² and run through its
+orchestrator. Nothing is static, nothing is hidden:
+
+- **Fresh-lane protocol.** Every battery re-emits the domain bundle from a
+  fresh public seed (chain-rule seeds derive from the previous verified
+  receipt). Memorizing one bundle buys nothing for the next.
+- **Independence, proven.** Pilsner (this repo) consumes evals it never
+  wrote: BenchBrew is the factory, τ²-bench is the runtime, Pilsner is the
+  scorekeeper. Three separate repos.
+- **Collusion guard.** The user simulator is a FIXED model, never the model
+  being evaluated — the eval can't frame its own test.
 
 ## Why the score is trustworthy
 
-- **External instrument, not ours.** The scored battery is τ2-bench — the
-  respected agent eval authored outside this repo. We run it; we don't
-  write it.
+- **Verified receipts.** A receipt is admitted to the board only if
+  replaying the recorded trajectory through the CURRENT domain code
+  re-derives the claimed score. The receipt carries provenance: spec
+  version + sha, seed, bundle sha, results hash. Forged, stale, or
+  evidence-less receipts are refused — every refusal so far has been a
+  true refusal (seven real bugs caught by verification, all fixed).
 - **Execution-verified.** Tasks succeed only if the work is actually done
-  in the simulated world (flight booked, refund issued, database state
-  correct at the end). There is no LLM judge to charm.
-- **Stateful = hard to memorize.** τ2 outcomes depend on the conversation
-  and the evolving database state, not a static answer key.
+  in the simulated world (booking canceled within the window, escrow
+  released only after payment, Reg E report filed in time, itinerary
+  within budget). There is no LLM judge to charm.
+- **Stateful = hard to memorize.** Outcomes depend on the conversation and
+  the evolving world state, not a static answer key — and the fresh-lane
+  protocol replaces the questions each time anyway.
 - **Same-box measurement.** Quality and speed are measured on the same
   hardware for every entry. Reproducible from the receipt: model, endpoint,
-  seed, task set, tau2 commit, wall clock.
-- **Nothing hidden.** The battery is public and re-runnable. If real gaming
-  ever appears, the freshness layer is added then — not pre-built.
+  seed, task set, τ² commit, wall clock.
+- **Honest operating point.** Scores are measured at the τ² operating
+  point — the agent must discover the world (inbox, listings, options)
+  rather than being handed it. The standalone calibration numbers in
+  BenchBrew remain the lane-design gate; the board crowns at the honest
+  measurement.
 
-## Dev tools
+## The board
 
-The repo also ships a synthetic function-calling harness (`eval/`) as the
-miners' iteration loop. It generates invented tool catalogs, executes calls
-against deterministic mock APIs, and scores result-equality. It is the dev
-tool — fast, free, GPU-free — but it is **not** the scored instrument. The
-arena gate is the τ2 battery above.
+Verified-only, per-(model, domain) pooled Wilson CI. Rebuild with
+`uv run python -m arena.board outputs --write`. Current kings
+(`outputs/leaderboard.json`, receipts in `outputs/report_tau2_seed*.json`):
 
-## Measured so far
+| Lane | King | Score | CI | Receipt |
+|---|---|---|---|---|
+| local_services | qwen36-iq2xxs | 0.375 (15/40) | [0.242-0.530] | seed 61, verified |
+| personal_finance | qwen36-iq2xxs | 0.375 (15/40) | [0.242-0.530] | seed 62, verified |
+| marketplace | qwen36-iq2xxs | 0.250 (2/8) | [0.071-0.591] | seed 45, verified (thin — refresh queued) |
+| travel | — | — | — | battery running |
 
-Reference ladder on the eval box (same binary, reasoning off, 16k context,
-50-task airline battery, one trial, receipts + raw results public in
-`outputs/`). Full board: `outputs/leaderboard.json`.
+## History: the 1-bit collapse (airline era)
+
+Reference ladder on the eval box (50-task airline battery, receipts + raw
+results public in `outputs/`):
 
 | Rung | Score (50 tasks) | 95% CI | vs Q8 floor |
 |---|---|---|---|
@@ -75,126 +102,42 @@ Reference ladder on the eval box (same binary, reasoning off, 16k context,
 Two conclusions, both independently measured and fully re-runnable:
 
 1. **The 2-bit class retains the full-precision agent.** Q2_K_XL ties the
-   Q8 floor exactly (31/50 each). The vendor's own claim (2-bit ≈ 90% of
-   full precision on τ2) is verified; the stronger 2-bit flavor shows 100%.
+   Q8 floor exactly (31/50 each).
 2. **The flagship 1-bit collapses on agent work.** Bonsai-27B at 1-bit
-   scores 0.16 at our operating point (reasoning off, llama.cpp, 5090) —
-   not the ~74% retention implied by their whitepaper table. A plain 2-bit
-   quant beats it 4x (their own Appendix C shows the same direction: 74.58
-   vs 61.34).
+   scores 0.16 at our operating point — not the ~74% retention implied by
+   their whitepaper table. The mechanism is not a JSON problem and not
+   context drift: 93 of the 1-bit's 95 tool errors are `User <id> not
+   found` — the agent must derive an entity id once and reuse it, and the
+   1-bit regenerates a guessed variation from the first reuse onward.
+   Grammar/schema-constrained decoding cannot fix it (the calls are
+   well-formed; the values are wrong). The failure is entity derivation
+   through ultra-low-precision weights.
 
-The mechanism is not a JSON problem and not context drift. 93 of the
-1-bit's 95 tool errors are `User <id> not found`: the agent must derive the
-passenger ID once from a reservation lookup and reuse it in every tool
-call, and the 1-bit regenerates a guessed variation instead (496, 7075, ...)
-from the first reuse onward. Grammar/schema-constrained decoding cannot
-fix it (the calls are well-formed; the values are wrong). The failure is
-entity derivation through ultra-low-precision weights — a concrete,
-serving-layer-testable claim. The arena's first challenger is exactly that
-test: an entity-memory adapter that re-surfaces the derived ID
-(`arena/adapter_entity_inject.py`).
+The BenchBrew lanes now measure the same capability axes at the honest
+operating point, with freshness and verification layered on top.
 
 ## Run
 
 ```bash
-# 1. Serve any model (vLLM / llama.cpp / SGLang — any OpenAI-compatible endpoint)
-./baselines/run_baseline.sh <hf_model_id> <served_name> [seed] [port]
+# a full battery: fresh seed -> emit -> tau2 run -> verify -> receipt
+export OPENAI_API_KEY=<endpoint key>
+PILSNER_T2_DOMAIN=local_services \
+PILSNER_BENCHBREW_SEED=61 \
+PILSNER_BENCHBREW_DIR=/opt/data/benchbrew \
+PILSNER_MODEL=qwen36-iq2xxs \
+PILSNER_BASE_URL=http://<agent-host>:41176/v1 \
+PILSNER_USER_MODEL=qwen3-4b \
+PILSNER_USER_BASE_URL=http://<user-sim-tunnel>:14177/v1 \
+PILSNER_T2_TASKS=40 \
+uv run python arena/run_tau2.py
 
-# 2. Run the scored battery against the served model -> receipt
-PILSNER_MODEL=<served_name> \
-PILSNER_BASE_URL=http://localhost:8000/v1 \
-PILSNER_T2_DIR=/path/to/tau2-bench \
-python3 -m arena.run_tau2
+# rebuild the board from verified receipts
+uv run python -m arena.board outputs --write
 ```
 
-Outputs: `outputs/report_tau2_seed<N>.json` — the receipt (score, timing,
-provenance) and `outputs/report_seed<N>.json` + `outputs/receipts_seed<N>.jsonl`
-from the FC dev harness (raw responses, auditable).
-
-GPU-free verification of the plumbing (no model, no GPU):
-
-```bash
-./arena/e2e_mock.sh        # mock OpenAI server -> tau2 -> receipt
-python3 -m unittest discover -s tests -v
-```
-
-## Reference ladder
-
-The quality floor is anchored by a fixed reference set, all run through the
-same τ2 battery on the same eval box:
-
-- **Near-full-precision base of the same model family** — retention vs full precision. Served as FP8 (~27GB, vLLM) or Q8_0 GGUF (~28.5GB): 27B at FP16 is ~54GB and cannot fit one 32GB 5090
-- **a small unquantized dense model (4B-class)** — the no-compression
-  dollar competitor; a compressed 27B must be worth its memory
-- **a conventional 2-bit quant of the 27B base** — 1-bit must beat 2-bit
-  on agent tasks, not just itself
-
-References are pinned (HF id + weights hash) before the first submission
-round. First ladder pins (all served via llama.cpp, thinking off):
-
-- near-full-precision: `Smoffyy/Qwen3.6-27B-Instruct-Revised-GGUF` q8_0
-- 1-bit incumbent: `prism-ml/Bonsai-27B-gguf` Q1_0 (3.8GB)
-- 2-bit flavor A: `unsloth/Qwen3.6-27B-GGUF` UD-IQ2_XXS (9.4GB)
-- 2-bit flavor B: `unsloth/Qwen3.6-27B-GGUF` UD-Q2_K_XL (11.8GB)
-- small dense: `unsloth/Qwen3-4B-GGUF` Q8_0 (4.3GB)
-
-**Ternary rung: unmeasurable on the pinned engine (2026-08-09).**
-`prism-ml/Ternary-Bonsai-27B-gguf` (both Q2_0 and PQ2_0 variants) uses a
-tensor layout defined in PrismML's custom llama.cpp fork — mainline
-(even latest) refuses the file ("failed to read tensor data"). The
-arena measures what its pinned engine can serve; a fork-locked artifact
-is disclosed as unmeasurable, not scored. This is the submission
-spec's engine-loadability rule in action.
-
-The scored battery runs 2 trials x 50 tasks x 2 domains (airline +
-retail = 200 sims) — at 1 trial the >2% rule is noise (CI ~+/-16%);
-at 200 sims the CI is ~+/-8%. The king is verified at the scored
-battery size, never the survey size.
-
-## Serving rules (learned the hard way)
-
-- **Operating point:** `--reasoning off` for every rung — Qwen3.6-family
-  thinking runaways (never-closed `<think>`) exhaust context and fail
-  tasks; the arena measures one operating point for everyone.
-- **Context divides by slots:** with a non-unified KV cache,
-  `-c N --parallel P` gives each conversation N/P context, not N.
-  Every rung gets 16k per slot: small models `-c 32768 --parallel 2`,
-  the Q8 floor `-c 16384 --parallel 1`. Verify `n_ctx_slot` in the serve
-  log at startup — an 8k slot halves context silently and inflates error
-  rates (49 context-cap failures on Bonsai 1-bit before the fix).
-- **No result = fail:** tau2 skips tasks that error out; receipts
-  reconcile missing tasks/trials as zeros (marked `no_result`), so a
-  model can't dodge the hard tail by failing to finish.
-- **Fixed user sim for scored batteries:** the ladder uses same-model-both
-  (survey, directional); the scored battery serves a fixed user
-  (Qwen3-4B Q4_K_M) so the customer is constant across entries —
-  otherwise a weak model plays a pushover customer and inflates its own
-  score. Receipts record `user_llm`; the challenge referee refuses
-  mismatched user sims.
-
-## Plugging in a new base
-
-The harness has no knowledge of any specific base model. Serve the new base
-and point `PILSNER_MODEL` at its served name:
-
-```bash
-./baselines/run_baseline.sh Qwen/Qwen3.8-27B qwen3.8-27b 1
-PILSNER_MODEL=qwen3.8-27b python3 -m arena.run_tau2
-```
-
-## Layout
-
-```
-arena/             the scored instrument glue: serve -> tau2 -> time -> receipt
-eval/              FC dev harness (iteration tool, not the gate)
-baselines/         reference entrypoint script
-tests/             unit tests (FC scoring + arena glue), GPU-free
-outputs/           receipts and reports (gitignored)
-```
-
-## Status
-
-Phase 1 (arena plumbing wired, mock-verified) — in progress. Phase 2
-(5090 baseline of the base model) and Phase 3 (first independent scores of
-incumbent low-bit builds) follow when the eval box is up. Governance
-scaffold (REVIEW/EVAL-TRUST/.gittensor/CI) lands before submissions open.
+Env contract: `PILSNER_T2_DOMAIN` (lane), `PILSNER_BENCHBREW_SEED` (public
+seed; also names the receipt slot when `PILSNER_SEED` is unset),
+`PILSNER_MODEL` / `PILSNER_BASE_URL` (the evaluated model),
+`PILSNER_USER_MODEL` / `PILSNER_USER_BASE_URL` (fixed user sim — must
+differ from the agent), `PILSNER_T2_TASKS` (battery size),
+`PILSNER_T2_MAX_STEPS` (agent step cap).
