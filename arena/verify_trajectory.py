@@ -93,7 +93,6 @@ def _replay_results(receipt: dict, t2_dir: Path) -> tuple[list[dict], list[str]]
         return mod.get_environment()
 
     domain = (receipt.get("domain") or "marketplace").split("+")[0]
-    env = _env_for(domain)
     for rel in files:
         p = t2_dir / rel
         if not p.exists():
@@ -102,6 +101,10 @@ def _replay_results(receipt: dict, t2_dir: Path) -> tuple[list[dict], list[str]]
         data = json.loads(p.read_text())
         tasks = {t["id"]: t for t in data.get("tasks", [])}
         for sim in data.get("simulations", []):
+            # a FRESH environment per sim: replaying 40 trajectories into
+            # one env leaks state between sims (goals scan collections with
+            # any(); a leaked message/booking flips predicates)
+            env = _env_for(domain)
             task = tasks.get(str(sim.get("task_id")))
             if task is None:
                 failures.append(f"sim task {sim.get('task_id')} not in results")
@@ -117,7 +120,13 @@ def _replay_results(receipt: dict, t2_dir: Path) -> tuple[list[dict], list[str]]
             except Exception as e:  # noqa: BLE001
                 failures.append(f"task {sim.get('task_id')}: replay failed: {e}")
                 continue
-            asserts = (sim.get("reward_info") or {}).get("env_assertions") or []
+            # the oracle is the TASK's env_assertions (the spec-derived
+            # definition), not the sim's recorded copy — a sim that failed
+            # to record them must still be judged against the task
+            asserts = ((task.get("evaluation_criteria") or {})
+                       .get("env_assertions")
+                       or (sim.get("reward_info") or {}).get("env_assertions")
+                       or [])
             if sim.get("reward_info") is None:
                 # no result = fail (arena rule, mirrors reconcile_missing):
                 # the sim never produced a reward, count it as a scored 0
@@ -132,7 +141,8 @@ def _replay_results(receipt: dict, t2_dir: Path) -> tuple[list[dict], list[str]]
             try:
                 results = [
                     env.run_env_assertion(
-                        EnvAssertion.model_validate(a["env_assertion"]),
+                        EnvAssertion.model_validate(
+                            a.get("env_assertion", a) if isinstance(a, dict) else a),
                         raise_assertion_error=False)
                     for a in asserts
                 ]
