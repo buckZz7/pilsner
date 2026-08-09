@@ -101,6 +101,19 @@ class TestBuildCommand(unittest.TestCase):
         self.assertEqual({pt["domain"] for pt in m["per_task"]},
                          {"airline", "retail"})
 
+    def test_tool_error_parsing(self):
+        from arena.run_tau2 import _tool_call_count, _tool_error_count
+        sim = {"messages": [
+            {"role": "assistant", "content": "None",
+             "tool_calls": "[{'name': 'search_flights'}, {'name': 'book_flight'}]"},
+            {"role": "tool", "content": "ok", "error": "False"},
+            {"role": "tool", "content": "bad args", "error": "True"},
+            {"role": "assistant", "content": "hi", "tool_calls": "None"},
+            {"role": "tool", "content": "err", "error": True},
+        ]}
+        self.assertEqual(_tool_call_count(sim), 2)
+        self.assertEqual(_tool_error_count(sim), 2)
+
     def test_reconcile_missing_ignores_extra_ids(self):
         from arena.run_tau2 import reconcile_missing
         score = {"per_task": [{"task_id": "0", "reward": 1.0},

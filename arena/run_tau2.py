@@ -119,6 +119,9 @@ def parse_results(results_path: Path) -> dict:
         per_task.append({
             "task_id": s.get("task_id", "?"),
             "reward": reward,
+            "tool_calls": _tool_call_count(s),
+            "tool_errors": _tool_error_count(s),
+            "termination": str(s.get("termination_reason") or ""),
         })
     n_success = sum(1 for r in rewards if r >= 1.0)
     total = len(rewards)
@@ -195,6 +198,38 @@ def merge_scores(scores: list[dict]) -> dict:
     merged["mean_reward"] = (sum(pt["reward"] for pt in merged["per_task"])
                              / merged["n_scored"])
     return merged
+
+
+def _msg_tool_calls(msg) -> int:
+    """Count tool calls in a message (field is a JSON string or list)."""
+    tc = msg.get("tool_calls") if isinstance(msg, dict) else getattr(msg, "tool_calls", None)
+    if not tc or tc == "None":
+        return 0
+    if isinstance(tc, str):
+        try:
+            tc = json.loads(tc)
+        except (ValueError, TypeError):
+            return 0
+    return len(tc) if isinstance(tc, (list, tuple)) else 0
+
+
+def _tool_call_count(sim: dict) -> int:
+    return sum(_msg_tool_calls(m) for m in (sim.get("messages") or []))
+
+
+def _tool_error_count(sim: dict) -> int:
+    n = 0
+    for m in sim.get("messages") or []:
+        if not isinstance(m, dict):
+            continue
+        if m.get("role") != "tool":
+            continue
+        err = m.get("error")
+        if isinstance(err, str) and err.lower() in ("true", "1"):
+            n += 1
+        elif err is True:
+            n += 1
+    return n
 
 
 def latest_results(t2_dir: Path) -> Path | None:
