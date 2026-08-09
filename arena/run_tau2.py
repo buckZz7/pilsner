@@ -31,6 +31,14 @@ Env contract (mirrors the FC harness):
                         default unspecified). Recorded in the receipt —
                         engine builds change measurements (a too-old
                         build can't load newer quant types).
+  PILSNER_MODEL_SHA256  sha256 of the served model file (default
+                        unspecified). Recorded in the receipt — binds
+                        the receipt to the exact artifact, so a tampered
+                        file is visible (sparkinfer baseline-verify
+                        pattern).
+  PILSNER_GPU_CLOCK     observed GPU graphics clock at serve time
+                        (default unspecified). Recorded so the
+                        wall-clock tie-break is clock-checkable.
   PILSNER_CTX           server context per slot (n_ctx_slot; default
                         unspecified). Recorded in the receipt — context
                         changes measurements, so it is part of the
@@ -280,6 +288,8 @@ def main() -> int:
     parallel = _env("PILSNER_PARALLEL", "unspecified")
     ctx = _env("PILSNER_CTX", "unspecified")
     engine_version = _env("PILSNER_ENGINE_VERSION", "unspecified")
+    model_sha256 = _env("PILSNER_MODEL_SHA256", "unspecified")
+    gpu_clock = _env("PILSNER_GPU_CLOCK", "unspecified")
     user_model = _env("PILSNER_USER_MODEL", "")
     user_base_url = _env("PILSNER_USER_BASE_URL", "")
 
@@ -339,6 +349,8 @@ def main() -> int:
         "reasoning": reasoning,
         "engine": engine,
         "engine_version": engine_version,
+        "model_sha256": model_sha256,
+        "gpu_clock": gpu_clock,
         "parallel": parallel,
         "context": ctx,
         "wall_clock_s": round(wall_clock_s, 3),
