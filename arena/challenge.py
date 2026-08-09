@@ -41,6 +41,7 @@ def battery_key(r: dict) -> tuple:
         r.get("num_tasks"),
         r.get("num_trials"),
         r.get("task_split"),
+        r.get("task_sample"),
         r.get("reasoning"),
         r.get("engine"),
         r.get("engine_version"),

@@ -114,6 +114,29 @@ class TestBuildCommand(unittest.TestCase):
         self.assertEqual(_tool_call_count(sim), 2)
         self.assertEqual(_tool_error_count(sim), 2)
 
+    def test_seeded_random_task_sample(self):
+        from arena.run_tau2 import expected_task_ids
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as td:
+            p = Path(td) / "data" / "tau2" / "domains" / "retail"
+            p.mkdir(parents=True)
+            (p / "tasks.json").write_text(json.dumps(
+                [{"id": str(i)} for i in range(114)]))
+            ids1, j1 = expected_task_ids(Path(td), "retail", 50,
+                                         sample="random", seed=42)
+            ids2, j2 = expected_task_ids(Path(td), "retail", 50,
+                                         sample="random", seed=42)
+            self.assertEqual(ids1, ids2)          # deterministic
+            self.assertNotEqual(ids1, [str(i) for i in range(50)])  # not first-N
+            self.assertEqual(len(ids1), 50)
+            self.assertEqual(j1, j2)
+            ids3, _ = expected_task_ids(Path(td), "retail", 50,
+                                        sample="random", seed=43)
+            self.assertNotEqual(ids1, ids3)       # seed changes the draw
+            ids4, _ = expected_task_ids(Path(td), "retail", 50)
+            self.assertEqual(ids4, [str(i) for i in range(50)])  # default first
+
     def test_reconcile_missing_ignores_extra_ids(self):
         from arena.run_tau2 import reconcile_missing
         score = {"per_task": [{"task_id": "0", "reward": 1.0},

@@ -22,8 +22,8 @@ REQUIRED = [
 ]
 # Fields that MUST match for two receipts to be on the same board.
 COMPARABLE = [
-    "domain", "num_tasks", "num_trials", "max_steps", "reasoning",
-    "engine", "parallel", "context", "user_llm",
+    "domain", "num_tasks", "num_trials", "max_steps", "task_sample",
+    "reasoning", "engine", "parallel", "context", "user_llm",
 ]
 
 

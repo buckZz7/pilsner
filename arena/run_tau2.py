@@ -184,13 +184,34 @@ def reconcile_missing(score: dict, expected_ids: list[str],
     return score
 
 
-def expected_task_ids(t2_dir: Path, domain: str, num_tasks: int) -> list[str]:
-    """The first num_tasks task ids of the domain's base split."""
+def expected_task_ids(t2_dir: Path, domain: str, num_tasks: int,
+                      sample: str = "first", seed: int = 1) -> tuple[list[str], str]:
+    """The task ids of the domain's base split for a battery.
+
+    sample="first"  -> first num_tasks (current behavior).
+    sample="random" -> seeded deterministic shuffle, take num_tasks; the
+                       seed is recorded in the receipt so the exact
+                       battery is reproducible. Random sampling raises
+                       the cost of memorizing the public task pool (an
+                       adversarial-review mitigation): a miner must
+                       overfit the whole pool, not just the first N.
+    Returns (ids, sampled_json) — the sampled ids as a JSON string for
+    the receipt (provenance: the exact task list is part of the battery
+    identity, like context and caps).
+    """
     p = t2_dir / "data" / "tau2" / "domains" / domain / "tasks.json"
     if p.exists():
         tasks = json.load(open(p))
-        return [str(t.get("id")) for t in tasks[:num_tasks]]
-    return [str(i) for i in range(num_tasks)]
+        ids = [str(t.get("id")) for t in tasks]
+    else:
+        ids = [str(i) for i in range(num_tasks)]
+    if sample == "random" and len(ids) > num_tasks:
+        import random
+        rng = random.Random(seed)
+        ids = rng.sample(ids, num_tasks)
+    else:
+        ids = ids[:num_tasks]
+    return ids, json.dumps(sorted(ids, key=int))
 
 
 def merge_scores(scores: list[dict]) -> dict:
@@ -281,7 +302,9 @@ def main() -> int:
     max_steps_s_env = _env("PILSNER_T2_MAX_STEPS_SECONDS", "")
     max_steps_s = int(max_steps_s_env) if max_steps_s_env else None
     task_split = _env("PILSNER_T2_TASK_SPLIT", "base")
+    sample_mode = _env("PILSNER_T2_TASK_SAMPLE", "first")
     seed = int(_env("PILSNER_SEED", "1"))
+    seed_slot = int(_env("PILSNER_SEED_SLOT", str(seed)))
     out_dir = Path(_env("PILSNER_OUT", "outputs"))
     reasoning = _env("PILSNER_REASONING", "unspecified")
     engine = _env("PILSNER_ENGINE", "unspecified")
@@ -303,6 +326,7 @@ def main() -> int:
     started = time.monotonic()
     scores = []
     results_files = []
+    sampled = {}
     for d in domains:
         cmd = [tau2_binary(t2_dir)] + build_command(
             model, base_url, d, num_tasks, num_trials, max_steps, task_split,
@@ -321,12 +345,14 @@ def main() -> int:
                   file=__import__("sys").stderr)
             return 4
         score = parse_results(results_path)
-        score = reconcile_missing(score, expected_task_ids(t2_dir, d, num_tasks),
-                                  num_trials)
+        ids, sampled_json = expected_task_ids(
+            t2_dir, d, num_tasks, sample=sample_mode, seed=seed_slot)
+        score = reconcile_missing(score, ids, num_trials)
         for pt in score["per_task"]:
             pt["domain"] = d
         scores.append(score)
         results_files.append(results_path)
+        sampled[d] = sampled_json
     wall_clock_s = time.monotonic() - started
 
     # merge across domains: aggregate counts, per-task tagged by domain
@@ -339,6 +365,8 @@ def main() -> int:
         "instrument": "tau2-bench",
         "domain": "+".join(domains),
         "task_split": task_split,
+        "task_sample": sample_mode,
+        "sampled_task_ids": sampled,
         "num_tasks": num_tasks,
         "num_trials": num_trials,
         "max_steps": max_steps,
