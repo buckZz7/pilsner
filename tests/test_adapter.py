@@ -39,20 +39,24 @@ def main():
     time.sleep(1.5)
     try:
         body = {"model": "x", "messages": [
-            {"role": "user", "content": "Hi, I am user_mei_brown_496"},
-            {"role": "assistant", "content": "What can I do?"},
-            {"role": "user", "content": "Search flights for tomorrow"}]}
+            {"role": "user", "content": "Hi, I'm Mei Brown, reservation EHGLP3"},
+            {"role": "assistant", "content": None,
+             "tool_calls": [{"id": "c1", "type": "function",
+                             "function": {"name": "get_reservation_details",
+                                          "arguments": "{\"reservation_id\": \"EHGLP3\"}"}}]},
+            {"role": "tool", "content": "{\"reservation_id\": \"EHGLP3\", \"user_id\": \"mei_brown_496\"}"},
+            {"role": "user", "content": "please proceed"}]}
         req = urllib.request.Request(
             "http://127.0.0.1:8090/v1/chat/completions",
             data=json.dumps(body).encode(),
             headers={"Content-Type": "application/json"})
         urllib.request.urlopen(req, timeout=10).read()
         msgs = received["body"]["messages"]
-        assert len(msgs) == 4, f"expected 4 messages, got {len(msgs)}"
+        assert len(msgs) == 5, f"expected 5 messages, got {len(msgs)}"
         last = msgs[-1]
         assert last["role"] == "system", "expected injected system message"
-        assert "user_mei_brown_496" in last["content"], "expected id in reminder"
-        print("adapter test PASSED: id injected as final system message")
+        assert "mei_brown_496" in last["content"], "expected id in reminder"
+        print("adapter test PASSED: id extracted from tool response, injected")
         return 0
     finally:
         proc.terminate()

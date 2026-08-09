@@ -16,7 +16,7 @@ import sys
 import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-ID_RE = re.compile(r"\buser_[a-z_]+_\d+\b", re.I)
+ID_RE = re.compile(r"user_id[\"']?\s*[:=]\s*[\"']?([a-z]+_[a-z]+_\d+)", re.I)
 UPSTREAM = "http://127.0.0.1:8001/v1"
 REMINDER = ("Reminder: the current passenger user id is {uid}. "
             "Use exactly this id (not a variation) in every tool call "
@@ -59,7 +59,7 @@ class H(BaseHTTPRequestHandler):
                                    if isinstance(p, dict))
                 hit = ID_RE.search(str(txt))
                 if hit:
-                    uid = hit.group(0)
+                    uid = hit.group(1)  # the id, from tool responses
             if uid and msgs:
                 # inject the reminder right before the model generates
                 d["messages"] = msgs + [{"role": "system",
