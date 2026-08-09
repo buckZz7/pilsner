@@ -66,6 +66,7 @@ import hashlib
 import json
 import os
 import subprocess
+import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -305,6 +306,9 @@ def main() -> int:
     sample_mode = _env("PILSNER_T2_TASK_SAMPLE", "first")
     seed = int(_env("PILSNER_SEED", "1"))
     seed_slot = int(_env("PILSNER_SEED_SLOT", str(seed)))
+    benchbrew_seed = _env("PILSNER_BENCHBREW_SEED", "")
+    benchbrew_dir = Path(_env("PILSNER_BENCHBREW_DIR",
+                               str(REPO_ROOT.parent / "benchbrew")))
     out_dir = Path(_env("PILSNER_OUT", "outputs"))
     reasoning = _env("PILSNER_REASONING", "unspecified")
     engine = _env("PILSNER_ENGINE", "unspecified")
@@ -322,6 +326,33 @@ def main() -> int:
 
     env = dict(os.environ)
     env.setdefault("OPENAI_API_KEY", "pilsner-dummy-key")
+
+    # Fresh-lane protocol: when PILSNER_BENCHBREW_SEED is set, regenerate +
+    # re-emit the domain bundle from that PUBLIC seed before the battery, so
+    # every eval runs a fresh task pool. The bundle hash lands in the receipt
+    # and anyone can regenerate it (spec + seed) to verify the tasks.
+    bb_prov = None
+    if benchbrew_seed:
+        cmd = [sys.executable, "-m", "benchbrew", "--seed", benchbrew_seed,
+               "--tasks", str(num_tasks), "--emit", str(t2_dir), "--quiet"]
+        print("benchbrew:", " ".join(cmd))
+        proc = subprocess.run(cmd, cwd=benchbrew_dir, capture_output=True,
+                              text=True)
+        if proc.returncode != 0:
+            print(f"error: benchbrew emit failed: {proc.stderr[-500:]}",
+                  file=sys.stderr)
+            return 5
+        for line in proc.stdout.strip().splitlines():
+            if line.startswith("benchbrew "):
+                kv = dict(p.split("=", 1) for p in line.split()[1:])
+                bb_prov = {
+                    "spec_version": kv.get("version"),
+                    "spec_sha256": kv.get("spec_sha256"),
+                    "seed": kv.get("seed"),
+                    "n_tasks": kv.get("tasks"),
+                    "bundle_sha256": kv.get("bundle_sha256"),
+                }
+        print("benchbrew provenance:", bb_prov)
 
     started = time.monotonic()
     scores = []
@@ -363,6 +394,7 @@ def main() -> int:
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "arena": "pilsner",
         "instrument": "tau2-bench",
+        "benchbrew": bb_prov,
         "domain": "+".join(domains),
         "task_split": task_split,
         "task_sample": sample_mode,

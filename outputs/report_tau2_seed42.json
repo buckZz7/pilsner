@@ -1,15 +1,15 @@
 {
   "schema": "pilsner-tau2-receipt/v1",
-  "timestamp": "2026-08-09T20:05:23.405421+00:00",
+  "timestamp": "2026-08-09T20:13:27.644092+00:00",
   "arena": "pilsner",
   "instrument": "tau2-bench",
   "domain": "marketplace",
   "task_split": "base",
   "task_sample": "first",
   "sampled_task_ids": {
-    "marketplace": "[\"0\", \"1\", \"2\"]"
+    "marketplace": "[\"0\", \"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\"]"
   },
-  "num_tasks": 3,
+  "num_tasks": 50,
   "num_trials": 1,
   "max_steps": null,
   "max_steps_seconds": null,
@@ -23,11 +23,11 @@
   "gpu_clock": "unspecified",
   "parallel": "unspecified",
   "context": "unspecified",
-  "wall_clock_s": 38.273,
-  "success_rate": 1.0,
-  "mean_reward": 1.0,
-  "n_success": 3,
-  "n_scored": 3,
+  "wall_clock_s": 225.793,
+  "success_rate": 0.75,
+  "mean_reward": 0.75,
+  "n_success": 6,
+  "n_scored": 8,
   "per_task": [
     {
       "task_id": "2",
@@ -40,8 +40,24 @@
     {
       "task_id": "0",
       "reward": 1.0,
-      "tool_calls": 3,
-      "tool_errors": 1,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "3",
+      "reward": 0.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "4",
+      "reward": 0.0,
+      "tool_calls": 1,
+      "tool_errors": 0,
       "termination": "user_stop",
       "domain": "marketplace"
     },
@@ -52,11 +68,35 @@
       "tool_errors": 1,
       "termination": "user_stop",
       "domain": "marketplace"
+    },
+    {
+      "task_id": "6",
+      "reward": 1.0,
+      "tool_calls": 6,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "7",
+      "reward": 1.0,
+      "tool_calls": 13,
+      "tool_errors": 4,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "5",
+      "reward": 1.0,
+      "tool_calls": 14,
+      "tool_errors": 4,
+      "termination": "user_stop",
+      "domain": "marketplace"
     }
   ],
   "tau2_git_commit": "668d3bcd135c02aa3438f987ef45735b7c163ee3",
   "agent_llm": "openai/qwen36-iq2xxs",
   "user_llm": "openai/qwen36-iq2xxs",
-  "results_file": "data/simulations/20260809_200450_marketplace_llm_agent_qwen36-iq2xxs_user_simulator_qwen36-iq2xxs/results.json",
-  "results_sha256": "16c74e0f32675ff38bad8daeed701445dc6ed1f037e9b3811481d4f124393277"
+  "results_file": "data/simulations/20260809_200946_marketplace_llm_agent_qwen36-iq2xxs_user_simulator_qwen36-iq2xxs/results.json",
+  "results_sha256": "b9bf1ddb84515fd9bd0fa2c9d5f2af836ad021d81ab261b29d629d94afafcc91"
 }

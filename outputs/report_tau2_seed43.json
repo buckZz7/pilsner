@@ -1,0 +1,77 @@
+{
+  "schema": "pilsner-tau2-receipt/v1",
+  "timestamp": "2026-08-09T20:17:44.199471+00:00",
+  "arena": "pilsner",
+  "instrument": "tau2-bench",
+  "benchbrew": {
+    "spec_version": "0.4.0",
+    "spec_sha256": "17b5b4da7b08a0eb",
+    "seed": "43",
+    "n_tasks": "4",
+    "bundle_sha256": "be90bc76a141ce477f8a656eb74f4e22f0ce10614785942042b7194d18992df1"
+  },
+  "domain": "marketplace",
+  "task_split": "base",
+  "task_sample": "first",
+  "sampled_task_ids": {
+    "marketplace": "[\"0\", \"1\", \"2\", \"3\"]"
+  },
+  "num_tasks": 4,
+  "num_trials": 1,
+  "max_steps": null,
+  "max_steps_seconds": null,
+  "seed_slot": 43,
+  "model": "qwen36-iq2xxs",
+  "base_url": "http://87.197.110.78:41176/v1",
+  "reasoning": "off",
+  "engine": "llama.cpp",
+  "engine_version": "unspecified",
+  "model_sha256": "unspecified",
+  "gpu_clock": "unspecified",
+  "parallel": "unspecified",
+  "context": "unspecified",
+  "wall_clock_s": 55.193,
+  "success_rate": 0.5,
+  "mean_reward": 0.5,
+  "n_success": 2,
+  "n_scored": 4,
+  "per_task": [
+    {
+      "task_id": "0",
+      "reward": 0.0,
+      "tool_calls": 1,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "2",
+      "reward": 1.0,
+      "tool_calls": 3,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "3",
+      "reward": 0.0,
+      "tool_calls": 3,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "1",
+      "reward": 1.0,
+      "tool_calls": 5,
+      "tool_errors": 2,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    }
+  ],
+  "tau2_git_commit": "668d3bcd135c02aa3438f987ef45735b7c163ee3",
+  "agent_llm": "openai/qwen36-iq2xxs",
+  "user_llm": "openai/qwen36-iq2xxs",
+  "results_file": "data/simulations/20260809_201653_marketplace_llm_agent_qwen36-iq2xxs_user_simulator_qwen36-iq2xxs/results.json",
+  "results_sha256": "1a6221cc07fb1d9132a706732376436535103e1915a01fce1acd3103606b6dc4"
+}
