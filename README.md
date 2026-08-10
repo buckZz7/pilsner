@@ -16,11 +16,17 @@ or any new base release — plugs in with a config change, not a code change.
 - **The challenge.** A submission is a head-to-head match against the king
   on the same box, same battery, same seed discipline. Sequential per-PR —
   one challenger at a time.
-- **One number.** Success rate on the scored battery.
-- **One rule.** Beat the king by more than 2% on the scored battery. Equal
-  or worse is a loss.
-- **One tie-break.** Time-to-task completion, measured same-box as wall
-  clock over the battery. Both better and faster wins; quality gates first.
+- **Two numbers.** Per-lane success rate (the walls) and the portfolio
+  score — every verified receipt pooled per model across all lanes (the
+  general number, and the champion's headline).
+- **Two win conditions.** QUALITY: beat the lane king by >2% with
+  non-overlapping 95% CIs (a raw 2% at 40 tasks is below the noise floor).
+  SPEED: land within the tie band AND be >=5% faster per task, same-box —
+  the runtime-optimization move. A challenger with <40 scored tasks per
+  lane can never crown on noise.
+- **Verdicts.** Every entry gets one: king / crown / speed-crown / hold /
+  refused. The champion must hold all four lanes — a partial portfolio can
+  claim lanes, never the general crown.
 - **Ratchet.** The winner becomes the king, and the next challenger must
   beat them. The king is re-verified on a schedule against the full field.
 
@@ -29,10 +35,15 @@ or any new base release — plugs in with a config change, not a code change.
 1. **Size gate** — runs on one RTX 5090 within 32GB (weights + KV cache),
    measured on the eval box.
 2. **Quality floor** — scored battery success rate beats the king by >2%
-   (ratchet). The scored instrument is BenchBrew: execution-verified agent
-   tasks where the final environment state decides success. No judge
-   anywhere — the oracle is spec-derived DB-state predicates.
-3. **Speed tier** — time-to-task completion above the quality floor.
+   with non-overlapping CIs (ratchet). The scored instrument is BenchBrew:
+   execution-verified agent tasks where the final environment state decides
+   success. No judge anywhere — the oracle is spec-derived DB-state
+   predicates.
+3. **Speed tier** — time-to-task completion per task, same-box, above the
+   quality floor (a tie in quality ranks the faster entry higher).
+4. **Model integrity** — the receipt binds what the endpoint actually
+   served (`/models` response) to the declaration; a challenger can't proxy
+   a different model behind a claimed one.
 
 ## The instrument: BenchBrew, not a static battery
 
@@ -75,7 +86,11 @@ orchestrator. Nothing is static, nothing is hidden:
 
 ## The board
 
-Verified-only, per-(model, domain) pooled Wilson CI. Rebuild with
+Verified-only, per-(model, domain) pooled Wilson CI. The board leads with
+the **portfolio** — every verified receipt pooled per model across all
+lanes: the general capability number a challenger must beat. The per-lane
+entries beneath are its audit trail (where the portfolio came from, which
+walls are thick and which are thin). Rebuild with
 `uv run python -m arena.board outputs --write`. Current kings
 (`outputs/leaderboard.json`, receipts in `outputs/report_tau2_seed*.json`):
 

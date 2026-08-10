@@ -1,6 +1,6 @@
 {
   "board_version": 3,
-  "updated": "2026-08-10T02:34:59.455465+00:00",
+  "updated": "2026-08-10T02:42:37.498630+00:00",
   "king": "qwen36-iq2xxs [marketplace]",
   "portfolio": [
     {
@@ -23,20 +23,21 @@
     },
     {
       "model": "qwen36-q8",
-      "portfolio_score": 0.3667,
+      "portfolio_score": 0.325,
       "ci95": [
-        0.2187,
-        0.5449
+        0.2008,
+        0.4798
       ],
-      "n_success": 11,
-      "n_scored": 30,
+      "n_success": 13,
+      "n_scored": 40,
       "lanes": [
         "local_services",
         "marketplace",
-        "personal_finance"
+        "personal_finance",
+        "travel"
       ],
-      "n_lanes": 3,
-      "champion_eligible": false
+      "n_lanes": 4,
+      "champion_eligible": true
     }
   ],
   "entries": [
@@ -219,6 +220,32 @@
       "results_sha256": "39a828c43eaa44e7",
       "timestamp": "2026-08-10T02:12:20.339805+00:00",
       "rank": 7,
+      "tie_break": "speed",
+      "verdict": "refused"
+    },
+    {
+      "model": "qwen36-q8",
+      "success_rate": 0.2,
+      "n_success": 2,
+      "n_scored": 10,
+      "ci95": [
+        0.0567,
+        0.5098
+      ],
+      "mean_reward": 0.2,
+      "wall_clock_s": 624.3,
+      "reasoning": "unspecified",
+      "engine": "unspecified",
+      "domain": "travel",
+      "num_trials": 1,
+      "n_receipts": 1,
+      "receipts": [
+        "69"
+      ],
+      "tau2_commit": "668d3bcd13",
+      "results_sha256": "14310a042f1337dd",
+      "timestamp": "2026-08-10T02:37:17.745310+00:00",
+      "rank": 8,
       "tie_break": "speed",
       "verdict": "refused"
     }
