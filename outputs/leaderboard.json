@@ -1,8 +1,32 @@
 {
   "board_version": 2,
-  "updated": "2026-08-10T00:14:53.740299+00:00",
-  "king": "qwen36-iq2xxs [local_services]",
+  "updated": "2026-08-10T00:28:12.666787+00:00",
+  "king": "qwen36-iq2xxs [marketplace]",
   "entries": [
+    {
+      "model": "qwen36-iq2xxs",
+      "success_rate": 0.4,
+      "n_success": 16,
+      "n_scored": 40,
+      "ci95": [
+        0.2635,
+        0.554
+      ],
+      "mean_reward": 0.4,
+      "wall_clock_s": 870.5,
+      "reasoning": "unspecified",
+      "engine": "unspecified",
+      "domain": "marketplace",
+      "num_trials": 1,
+      "n_receipts": 1,
+      "receipts": [
+        null
+      ],
+      "tau2_commit": "668d3bcd13",
+      "results_sha256": "612cb4dab9c196e7",
+      "timestamp": "2026-08-10T00:26:22.903278+00:00",
+      "rank": 1
+    },
     {
       "model": "qwen36-iq2xxs",
       "success_rate": 0.375,
@@ -25,7 +49,7 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "98cffad5174ea5e1",
       "timestamp": "2026-08-09T23:17:00.188124+00:00",
-      "rank": 1
+      "rank": 2
     },
     {
       "model": "qwen36-iq2xxs",
@@ -49,7 +73,7 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "643ca39783db04cd",
       "timestamp": "2026-08-09T23:41:33.206584+00:00",
-      "rank": 2
+      "rank": 3
     },
     {
       "model": "qwen36-iq2xxs",
@@ -73,7 +97,7 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "34395202bd460923",
       "timestamp": "2026-08-09T23:57:51.720083+00:00",
-      "rank": 3
+      "rank": 4
     }
   ]
 }
