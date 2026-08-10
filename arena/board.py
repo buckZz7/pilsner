@@ -75,16 +75,6 @@ def build_board(receipts: list[dict]) -> dict:
     # PER TASK, same-box). Commensurate evidence required: a challenger with
     # fewer scored tasks than MIN_CROWN_TASKS can't crown on noise.
     MIN_CROWN_TASKS = 40
-    # the weak-model floor: each lane's calibrated 4B score (GROUNDING.md).
-    # A challenger scoring BELOW it isn't just losing to the king — it's
-    # below a model we already know is weak: flagged non-competitive.
-    WEAK_FLOORS = {
-        "marketplace": 0.231,
-        "local_services": 0.528,
-        "personal_finance": 0.346,
-        "travel": 0.107,
-        "coding": 0.0,
-    }
     by_domain = {}
     for e in entries:
         by_domain.setdefault(e["domain"], []).append(e)
@@ -93,8 +83,11 @@ def build_board(receipts: list[dict]) -> dict:
         return e["wall_clock_s"] / e["n_scored"] if e["n_scored"] else 0.0
 
     for domain, es in by_domain.items():
-        dk = max(es, key=lambda e: (e["success_rate"], -per_task(e)))
-        floor = WEAK_FLOORS.get(domain, 0.0)
+        # the lane king comes from the EVIDENCE pool (>= MIN_CROWN_TASKS):
+        # a thin challenger can rank high by rate but never hold the crown
+        crowned = [e for e in es if e["n_scored"] >= MIN_CROWN_TASKS]
+        pool = crowned or es
+        dk = max(pool, key=lambda e: (e["success_rate"], -per_task(e)))
         for e in es:
             if e is dk or dk["success_rate"] == 0:
                 e["verdict"] = "king"
@@ -109,8 +102,6 @@ def build_board(receipts: list[dict]) -> dict:
                     and gap >= -0.01
                     and per_task(e) <= per_task(dk) * 0.95):
                 e["verdict"] = "speed-crown"
-            elif e["success_rate"] < floor:
-                e["verdict"] = "non-competitive"
             elif gap < -0.02:
                 e["verdict"] = "refused"
             else:
@@ -143,7 +134,11 @@ def build_board(receipts: list[dict]) -> dict:
             "champion_eligible": len(p["lanes"]) >= 4,
         })
     portfolio.sort(key=lambda p: (-p["portfolio_score"], -p["n_scored"]))
-    king = max(entries, key=lambda e: (e["success_rate"], -per_task(e)))
+    # the global king field: the best crowned entry (evidence pool), never a
+    # thin challenger floating on a lucky rate
+    crowned_all = [e for e in entries if e["n_scored"] >= MIN_CROWN_TASKS]
+    pool = crowned_all or entries
+    king = max(pool, key=lambda e: (e["success_rate"], -per_task(e)))
     return {
         "board_version": 3,
         "updated": datetime.now(timezone.utc).isoformat(),

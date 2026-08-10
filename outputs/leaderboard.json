@@ -1,7 +1,7 @@
 {
   "board_version": 3,
-  "updated": "2026-08-10T02:30:31.260645+00:00",
-  "king": "qwen36-q8 [personal_finance]",
+  "updated": "2026-08-10T02:34:59.455465+00:00",
+  "king": "qwen36-iq2xxs [marketplace]",
   "portfolio": [
     {
       "model": "qwen36-iq2xxs",
@@ -64,7 +64,7 @@
       "timestamp": "2026-08-10T02:26:46.846633+00:00",
       "rank": 1,
       "tie_break": "speed",
-      "verdict": "king"
+      "verdict": "hold"
     },
     {
       "model": "qwen36-iq2xxs",
@@ -142,7 +142,7 @@
       "timestamp": "2026-08-09T23:41:33.206584+00:00",
       "rank": 4,
       "tie_break": "speed",
-      "verdict": "refused"
+      "verdict": "king"
     },
     {
       "model": "qwen36-iq2xxs",
@@ -194,7 +194,7 @@
       "timestamp": "2026-08-10T02:18:21.544300+00:00",
       "rank": 6,
       "tie_break": "speed",
-      "verdict": "non-competitive"
+      "verdict": "refused"
     },
     {
       "model": "qwen36-q8",
