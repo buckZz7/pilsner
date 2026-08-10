@@ -1,6 +1,6 @@
 {
   "board_version": 2,
-  "updated": "2026-08-10T00:28:12.666787+00:00",
+  "updated": "2026-08-10T01:52:16.007243+00:00",
   "king": "qwen36-iq2xxs [marketplace]",
   "entries": [
     {
@@ -20,7 +20,7 @@
       "num_trials": 1,
       "n_receipts": 1,
       "receipts": [
-        null
+        "64"
       ],
       "tau2_commit": "668d3bcd13",
       "results_sha256": "612cb4dab9c196e7",
@@ -44,7 +44,7 @@
       "num_trials": 1,
       "n_receipts": 1,
       "receipts": [
-        null
+        "61"
       ],
       "tau2_commit": "668d3bcd13",
       "results_sha256": "98cffad5174ea5e1",
@@ -68,7 +68,7 @@
       "num_trials": 1,
       "n_receipts": 1,
       "receipts": [
-        null
+        "62"
       ],
       "tau2_commit": "668d3bcd13",
       "results_sha256": "643ca39783db04cd",
@@ -92,7 +92,7 @@
       "num_trials": 1,
       "n_receipts": 1,
       "receipts": [
-        null
+        "63"
       ],
       "tau2_commit": "668d3bcd13",
       "results_sha256": "34395202bd460923",

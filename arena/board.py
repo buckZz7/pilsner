@@ -55,7 +55,8 @@ def build_board(receipts: list[dict]) -> dict:
             "domain": domain,
             "num_trials": max((r.get("num_trials") for r in rs), default=None),
             "n_receipts": len(rs),
-            "receipts": [r.get("seed") for r in rs],
+            "receipts": [(r.get("benchbrew") or {}).get("seed")
+                         for r in rs],
             "tau2_commit": (rs[0].get("tau2_git_commit") or "?")[:10],
             "results_sha256": (rs[0].get("results_sha256") or "")[:16],
             "timestamp": rs[-1].get("timestamp", ""),
