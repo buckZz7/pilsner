@@ -1,7 +1,7 @@
 {
   "board_version": 3,
-  "updated": "2026-08-10T02:17:18.472731+00:00",
-  "king": "qwen36-iq2xxs [marketplace]",
+  "updated": "2026-08-10T02:30:31.260645+00:00",
+  "king": "qwen36-q8 [personal_finance]",
   "portfolio": [
     {
       "model": "qwen36-iq2xxs",
@@ -18,24 +18,54 @@
         "personal_finance",
         "travel"
       ],
-      "n_lanes": 4
+      "n_lanes": 4,
+      "champion_eligible": true
     },
     {
       "model": "qwen36-q8",
-      "portfolio_score": 0.3,
+      "portfolio_score": 0.3667,
       "ci95": [
-        0.1078,
-        0.6032
+        0.2187,
+        0.5449
       ],
-      "n_success": 3,
-      "n_scored": 10,
+      "n_success": 11,
+      "n_scored": 30,
       "lanes": [
-        "marketplace"
+        "local_services",
+        "marketplace",
+        "personal_finance"
       ],
-      "n_lanes": 1
+      "n_lanes": 3,
+      "champion_eligible": false
     }
   ],
   "entries": [
+    {
+      "model": "qwen36-q8",
+      "success_rate": 0.5,
+      "n_success": 5,
+      "n_scored": 10,
+      "ci95": [
+        0.2366,
+        0.7634
+      ],
+      "mean_reward": 0.5,
+      "wall_clock_s": 498.7,
+      "reasoning": "unspecified",
+      "engine": "unspecified",
+      "domain": "personal_finance",
+      "num_trials": 1,
+      "n_receipts": 1,
+      "receipts": [
+        "68"
+      ],
+      "tau2_commit": "668d3bcd13",
+      "results_sha256": "aa0908a73c9b9c38",
+      "timestamp": "2026-08-10T02:26:46.846633+00:00",
+      "rank": 1,
+      "tie_break": "speed",
+      "verdict": "king"
+    },
     {
       "model": "qwen36-iq2xxs",
       "success_rate": 0.4,
@@ -58,7 +88,7 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "612cb4dab9c196e7",
       "timestamp": "2026-08-10T00:26:22.903278+00:00",
-      "rank": 1,
+      "rank": 2,
       "tie_break": "speed",
       "verdict": "king"
     },
@@ -84,7 +114,7 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "98cffad5174ea5e1",
       "timestamp": "2026-08-09T23:17:00.188124+00:00",
-      "rank": 2,
+      "rank": 3,
       "tie_break": "speed",
       "verdict": "king"
     },
@@ -110,9 +140,9 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "643ca39783db04cd",
       "timestamp": "2026-08-09T23:41:33.206584+00:00",
-      "rank": 3,
+      "rank": 4,
       "tie_break": "speed",
-      "verdict": "king"
+      "verdict": "refused"
     },
     {
       "model": "qwen36-iq2xxs",
@@ -136,9 +166,35 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "34395202bd460923",
       "timestamp": "2026-08-09T23:57:51.720083+00:00",
-      "rank": 4,
+      "rank": 5,
       "tie_break": "speed",
       "verdict": "king"
+    },
+    {
+      "model": "qwen36-q8",
+      "success_rate": 0.3,
+      "n_success": 3,
+      "n_scored": 10,
+      "ci95": [
+        0.1078,
+        0.6032
+      ],
+      "mean_reward": 0.3,
+      "wall_clock_s": 354.5,
+      "reasoning": "unspecified",
+      "engine": "unspecified",
+      "domain": "local_services",
+      "num_trials": 1,
+      "n_receipts": 1,
+      "receipts": [
+        "67"
+      ],
+      "tau2_commit": "668d3bcd13",
+      "results_sha256": "7db9124b8395ec52",
+      "timestamp": "2026-08-10T02:18:21.544300+00:00",
+      "rank": 6,
+      "tie_break": "speed",
+      "verdict": "non-competitive"
     },
     {
       "model": "qwen36-q8",
@@ -162,7 +218,7 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "39a828c43eaa44e7",
       "timestamp": "2026-08-10T02:12:20.339805+00:00",
-      "rank": 5,
+      "rank": 7,
       "tie_break": "speed",
       "verdict": "refused"
     }

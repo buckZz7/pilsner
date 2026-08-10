@@ -1,0 +1,142 @@
+{
+  "schema": "pilsner-tau2-receipt/v1",
+  "timestamp": "2026-08-10T02:18:21.544300+00:00",
+  "arena": "pilsner",
+  "instrument": "tau2-bench",
+  "benchbrew": {
+    "domain": "local_services",
+    "spec_version": "0.2.0",
+    "spec_sha256": "c5a04653aa56b308",
+    "seed": "67",
+    "seed_source": "operator",
+    "n_tasks": "10",
+    "bundle_sha256": "e45c708cfceeb4d1d82e4afc4c371dba2496aec2cfd315569ec422c034a0bac2"
+  },
+  "domain": "local_services",
+  "task_split": "base",
+  "task_sample": "first",
+  "sampled_task_ids": {
+    "local_services": "[\"0\", \"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\"]"
+  },
+  "num_tasks": 10,
+  "num_trials": 1,
+  "max_steps": 25,
+  "max_steps_seconds": null,
+  "seed_slot": 67,
+  "model": "qwen36-q8",
+  "base_url": "http://87.197.110.78:41176/v1",
+  "reasoning": "unspecified",
+  "engine": "unspecified",
+  "engine_version": "unspecified",
+  "model_sha256": "unspecified",
+  "gpu_clock": "unspecified",
+  "parallel": "unspecified",
+  "context": "unspecified",
+  "wall_clock_s": 354.459,
+  "success_rate": 0.3,
+  "mean_reward": 0.3,
+  "n_success": 3,
+  "n_scored": 10,
+  "per_task": [
+    {
+      "task_id": "0",
+      "reward": 0.0,
+      "tool_calls": 1,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "local_services"
+    },
+    {
+      "task_id": "1",
+      "reward": 0.0,
+      "tool_calls": 1,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "local_services"
+    },
+    {
+      "task_id": "3",
+      "reward": 0.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "local_services"
+    },
+    {
+      "task_id": "2",
+      "reward": 0.0,
+      "tool_calls": 1,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "local_services"
+    },
+    {
+      "task_id": "5",
+      "reward": 1.0,
+      "tool_calls": 1,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "local_services"
+    },
+    {
+      "task_id": "6",
+      "reward": 0.0,
+      "tool_calls": 1,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "local_services"
+    },
+    {
+      "task_id": "7",
+      "reward": 1.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "local_services"
+    },
+    {
+      "task_id": "4",
+      "reward": 0.0,
+      "tool_calls": 7,
+      "tool_errors": 4,
+      "termination": "user_stop",
+      "domain": "local_services"
+    },
+    {
+      "task_id": "8",
+      "reward": 1.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "local_services"
+    },
+    {
+      "task_id": "9",
+      "reward": 0.0,
+      "tool_calls": 1,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "local_services"
+    }
+  ],
+  "tau2_git_commit": "668d3bcd135c02aa3438f987ef45735b7c163ee3",
+  "agent_llm": "openai/qwen36-q8",
+  "user_llm": "openai/qwen3-4b",
+  "results_file": "data/simulations/20260810_021232_local_services_llm_agent_qwen36-q8_user_simulator_qwen3-4b/results.json",
+  "results_sha256": "7db9124b8395ec528d924f5e778456e467f2c97f2d6b41a3dbba25a55f43f139",
+  "verified": true,
+  "verification": {
+    "checks": {
+      "results_sha256": "7db9124b8395ec528d924f5e778456e467f2c97f2d6b41a3dbba25a55f43f139",
+      "bundle": [
+        "bundle regenerated: sha matches e45c708cfcee\u2026"
+      ],
+      "replay": {
+        "n": 10,
+        "ok": 3,
+        "rate": 0.3
+      }
+    },
+    "failures": []
+  }
+}

@@ -68,6 +68,7 @@ import os
 import subprocess
 import sys
 import time
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -76,6 +77,20 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 
 def _env(key: str, default: str) -> str:
     return os.environ.get(key, default)
+
+
+def _served_model(base_url: str) -> str | None:
+    """Query the endpoint's /models and return the served model id — the
+    model-integrity baseline: the receipt must bind what was actually
+    served, not just what was declared (a challenger could proxy anything)."""
+    url = base_url.rstrip("/") + "/models"
+    try:
+        with urllib.request.urlopen(url, timeout=10) as r:
+            data = json.loads(r.read().decode())
+        ids = [m.get("id") or m.get("model") for m in data.get("data", [])]
+        return ", ".join(ids) if ids else None
+    except Exception:
+        return None
 
 
 def build_command(
@@ -444,6 +459,9 @@ def main() -> int:
         "engine": engine,
         "engine_version": engine_version,
         "model_sha256": model_sha256,
+        # model integrity: what the endpoint ACTUALLY served vs declared
+        "served_model": _served_model(base_url),
+        "model_declared": model,
         "gpu_clock": gpu_clock,
         "parallel": parallel,
         "context": ctx,
