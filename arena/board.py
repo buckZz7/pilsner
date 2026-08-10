@@ -65,10 +65,36 @@ def build_board(receipts: list[dict]) -> dict:
     for i, e in enumerate(entries):
         e["rank"] = i + 1
     king = entries[0] if entries else None
+    # portfolio readout: the GENERAL capability number — every verified
+    # receipt pooled per model across ALL lanes. This is the headline a
+    # challenger must beat; the per-lane entries are its audit trail.
+    portfolios = {}
+    for r in receipts:
+        key = r.get("model", "?")
+        p = portfolios.setdefault(key, {"n_success": 0, "n_scored": 0,
+                                        "lanes": set()})
+        p["n_success"] += r.get("n_success", 0)
+        p["n_scored"] += r.get("n_scored", 0)
+        p["lanes"].add(r.get("domain", "?"))
+    portfolio = []
+    for model, p in portfolios.items():
+        rate = p["n_success"] / p["n_scored"] if p["n_scored"] else 0.0
+        lo, hi = wilson_ci(rate, p["n_scored"])
+        portfolio.append({
+            "model": model,
+            "portfolio_score": round(rate, 4),
+            "ci95": [round(lo, 4), round(hi, 4)],
+            "n_success": p["n_success"],
+            "n_scored": p["n_scored"],
+            "lanes": sorted(p["lanes"]),
+            "n_lanes": len(p["lanes"]),
+        })
+    portfolio.sort(key=lambda p: (-p["portfolio_score"], -p["n_scored"]))
     return {
-        "board_version": 2,
+        "board_version": 3,
         "updated": datetime.now(timezone.utc).isoformat(),
         "king": f"{king['model']} [{king['domain']}]" if king else None,
+        "portfolio": portfolio,
         "entries": entries,
     }
 
@@ -121,6 +147,11 @@ def main() -> int:
                   f"{(r.get('verification', {}).get('failures') or ['not verified'])[0][:80]}")
         return 1
     board = build_board(admitted)
+    print(f"portfolio: {board['portfolio'][0]['model']} "
+          f"{board['portfolio'][0]['portfolio_score']:.3f} "
+          f"[{board['portfolio'][0]['ci95'][0]:.3f}-{board['portfolio'][0]['ci95'][1]:.3f}] "
+          f"({board['portfolio'][0]['n_success']}/{board['portfolio'][0]['n_scored']}) "
+          f"across {board['portfolio'][0]['n_lanes']} lanes — the general number")
     print(f"king: {board['king']}  (kings are per-lane; compare within a domain)")
     for e in board["entries"]:
         print(f"  #{e['rank']} {e['model']:<16} {e['success_rate']:.3f} "

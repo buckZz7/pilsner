@@ -1,7 +1,26 @@
 {
-  "board_version": 2,
-  "updated": "2026-08-10T01:52:16.007243+00:00",
+  "board_version": 3,
+  "updated": "2026-08-10T01:56:17.787098+00:00",
   "king": "qwen36-iq2xxs [marketplace]",
+  "portfolio": [
+    {
+      "model": "qwen36-iq2xxs",
+      "portfolio_score": 0.3812,
+      "ci95": [
+        0.3096,
+        0.4585
+      ],
+      "n_success": 61,
+      "n_scored": 160,
+      "lanes": [
+        "local_services",
+        "marketplace",
+        "personal_finance",
+        "travel"
+      ],
+      "n_lanes": 4
+    }
+  ],
   "entries": [
     {
       "model": "qwen36-iq2xxs",
