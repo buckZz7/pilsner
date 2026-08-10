@@ -69,24 +69,36 @@ def build_board(receipts: list[dict]) -> dict:
     for i, e in enumerate(entries):
         e["rank"] = i + 1
         e["tie_break"] = "speed"  # documented: equal quality -> faster ranks
-    # ratchet verdicts vs the king: a challenger dethrones on QUALITY (>2%
-    # better) or on SPEED (within the quality tie band — CI overlap or <=1%
-    # below — AND >=5% faster same-box). Both are legitimate miner moves:
-    # improve the model, or improve the serving.
-    king = entries[0] if entries else None
-    if king:
-        for e in entries:
-            if e is king or king["success_rate"] == 0:
+    # ratchet verdicts, PER LANE: a challenger dethrones its lane's king on
+    # QUALITY (non-overlapping 95% CIs AND >2% gap — a raw 2% on 40 tasks is
+    # below the noise floor) or on SPEED (within the tie band AND >=5% faster
+    # PER TASK, same-box). Commensurate evidence required: a challenger with
+    # fewer scored tasks than MIN_CROWN_TASKS can't crown on noise.
+    MIN_CROWN_TASKS = 40
+    by_domain = {}
+    for e in entries:
+        by_domain.setdefault(e["domain"], []).append(e)
+
+    def per_task(e):
+        return e["wall_clock_s"] / e["n_scored"] if e["n_scored"] else 0.0
+
+    for domain, es in by_domain.items():
+        dk = max(es, key=lambda e: (e["success_rate"], -per_task(e)))
+        for e in es:
+            if e is dk or dk["success_rate"] == 0:
                 e["verdict"] = "king"
                 continue
-            quality_gap = e["success_rate"] - king["success_rate"]
-            if quality_gap > 0.02:
+            gap = e["success_rate"] - dk["success_rate"]
+            cis_overlap = e["ci95"][0] <= dk["ci95"][1]
+            if (e["n_scored"] >= MIN_CROWN_TASKS
+                    and dk["n_scored"] >= MIN_CROWN_TASKS
+                    and gap > 0.02 and not cis_overlap):
                 e["verdict"] = "crown"
-            elif (quality_gap >= -0.01
-                  and king["wall_clock_s"] > 0
-                  and e["wall_clock_s"] <= king["wall_clock_s"] * 0.95):
+            elif (e["n_scored"] >= MIN_CROWN_TASKS
+                    and gap >= -0.01
+                    and per_task(e) <= per_task(dk) * 0.95):
                 e["verdict"] = "speed-crown"
-            elif quality_gap < -0.02:
+            elif gap < -0.02:
                 e["verdict"] = "refused"
             else:
                 e["verdict"] = "hold"
@@ -115,6 +127,7 @@ def build_board(receipts: list[dict]) -> dict:
             "n_lanes": len(p["lanes"]),
         })
     portfolio.sort(key=lambda p: (-p["portfolio_score"], -p["n_scored"]))
+    king = max(entries, key=lambda e: (e["success_rate"], -per_task(e)))
     return {
         "board_version": 3,
         "updated": datetime.now(timezone.utc).isoformat(),
