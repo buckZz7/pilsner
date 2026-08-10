@@ -1,6 +1,6 @@
 {
   "board_version": 2,
-  "updated": "2026-08-09T23:41:46.668691+00:00",
+  "updated": "2026-08-10T00:11:34.585837+00:00",
   "king": "qwen36-iq2xxs [local_services]",
   "entries": [
     {
@@ -53,26 +53,26 @@
     },
     {
       "model": "qwen36-iq2xxs",
-      "success_rate": 0.25,
-      "n_success": 2,
-      "n_scored": 8,
+      "success_rate": 0.375,
+      "n_success": 15,
+      "n_scored": 40,
       "ci95": [
-        0.0715,
-        0.5907
+        0.2422,
+        0.5297
       ],
-      "mean_reward": 0.25,
-      "wall_clock_s": 256.5,
-      "reasoning": "off",
-      "engine": "llama.cpp",
-      "domain": "marketplace",
+      "mean_reward": 0.375,
+      "wall_clock_s": 939.2,
+      "reasoning": "unspecified",
+      "engine": "unspecified",
+      "domain": "travel",
       "num_trials": 1,
       "n_receipts": 1,
       "receipts": [
         null
       ],
       "tau2_commit": "668d3bcd13",
-      "results_sha256": "837f471403855a52",
-      "timestamp": "2026-08-09T20:43:39.107859+00:00",
+      "results_sha256": "34395202bd460923",
+      "timestamp": "2026-08-09T23:57:51.720083+00:00",
       "rank": 3
     }
   ]

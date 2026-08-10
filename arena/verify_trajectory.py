@@ -120,13 +120,12 @@ def _replay_results(receipt: dict, t2_dir: Path) -> tuple[list[dict], list[str]]
             except Exception as e:  # noqa: BLE001
                 failures.append(f"task {sim.get('task_id')}: replay failed: {e}")
                 continue
-            # the oracle is the TASK's env_assertions (the spec-derived
-            # definition), not the sim's recorded copy — a sim that failed
-            # to record them must still be judged against the task
-            asserts = ((task.get("evaluation_criteria") or {})
-                       .get("env_assertions")
-                       or (sim.get("reward_info") or {}).get("env_assertions")
-                       or [])
+            # the oracle for EVALUATED sims is the TASK's env_assertions
+            # (the spec-derived definition), not the sim's recorded copy —
+            # but only when the sim WAS evaluated. A sim that terminated
+            # without evaluation (max steps / infra error) was never scored
+            # by the goal; the arena counts it a fail, and so does replay.
+            recorded = (sim.get("reward_info") or {}).get("env_assertions") or []
             if sim.get("reward_info") is None:
                 # no result = fail (arena rule, mirrors reconcile_missing):
                 # the sim never produced a reward, count it as a scored 0
@@ -134,10 +133,17 @@ def _replay_results(receipt: dict, t2_dir: Path) -> tuple[list[dict], list[str]]
                                  "replay": 0.0, "claimed": None,
                                  "no_result": True})
                 continue
-            if not asserts:
+            if not recorded:
+                # terminated before evaluation (max steps / infra error):
+                # live verdict was fail — mirror it, do NOT run the goal
                 per_task.append({"task_id": sim.get("task_id"),
-                                 "replay": None, "claimed": None})
+                                 "replay": 0.0,
+                                 "claimed": (sim.get("reward_info") or {}).get("reward"),
+                                 "not_evaluated": True})
                 continue
+            asserts = ((task.get("evaluation_criteria") or {})
+                       .get("env_assertions")
+                       or recorded)
             try:
                 results = [
                     env.run_env_assertion(
