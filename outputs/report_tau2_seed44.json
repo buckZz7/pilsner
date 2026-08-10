@@ -441,5 +441,61 @@
   "agent_llm": "openai/qwen36-iq2xxs",
   "user_llm": "openai/qwen36-iq2xxs",
   "results_file": "data/simulations/20260809_201849_marketplace_llm_agent_qwen36-iq2xxs_user_simulator_qwen36-iq2xxs/results.json",
-  "results_sha256": "1a229dc0782f6de654fd6c9ddc727a8b327328982a37039b4d7615637888d553"
+  "results_sha256": "1a229dc0782f6de654fd6c9ddc727a8b327328982a37039b4d7615637888d553",
+  "verified": false,
+  "verification": {
+    "checks": {
+      "results_sha256": "1a229dc0782f6de654fd6c9ddc727a8b327328982a37039b4d7615637888d553",
+      "bundle": [
+        "bundle_sha256 mismatch: receipt claims a2c8ba6f0074d616f805af77516e1153094edb3bfa7e829a91af038420557014, regenerated 155398dd68e500e385db2736013879ecbc25505b8799373504517b008e43cc1b"
+      ],
+      "replay": {
+        "n": 13,
+        "ok": 9,
+        "rate": 0.6923076923076923
+      }
+    },
+    "failures": [
+      "bundle_sha256 mismatch: receipt claims a2c8ba6f0074d616f805af77516e1153094edb3bfa7e829a91af038420557014, regenerated 155398dd68e500e385db2736013879ecbc25505b8799373504517b008e43cc1b",
+      "stale spec epoch: receipt from spec v0.4.0, current spec is v0.5.0 \u2014 re-run the battery on the current lane",
+      "task 0: assertion failed: MarketplaceTools.assert_buy_avoid_scam_ok() got an unexpected keyword argument 'scam_seller_id'",
+      "task 2: assertion failed: MarketplaceTools.assert_buy_negotiate_ok() got an unexpected keyword argument 'listing_id'",
+      "task 4: assertion failed: MarketplaceTools.assert_sell_create_listing_ok() got an unexpected keyword argument 'title'",
+      "task 3: assertion failed: MarketplaceTools.assert_buy_negotiate_rounds_ok() got an unexpected keyword argument 'listing_id'",
+      "task 5: assertion failed: MarketplaceTools.assert_sell_expiring_offer_ok() got an unexpected keyword argument 'buyer_id'",
+      "task 6: assertion failed: MarketplaceTools.assert_sell_full_inbox_ok() got an unexpected keyword argument 'legit_buyer'",
+      "task 7: assertion failed: MarketplaceTools.assert_sell_list_close_ok() got an unexpected keyword argument 'buyer_id'",
+      "task 9: assertion failed: MarketplaceTools.assert_sell_reject_lowball_ok() got an unexpected keyword argument 'offer_id'",
+      "task 10: assertion failed: MarketplaceTools.assert_sell_scam_variant_ok() got an unexpected keyword argument 'scammer'",
+      "task 12: assertion failed: MarketplaceTools.assert_buy_avoid_scam_ok() got an unexpected keyword argument 'scam_seller_id'",
+      "task 14: assertion failed: MarketplaceTools.assert_buy_negotiate_ok() got an unexpected keyword argument 'listing_id'",
+      "task 16: assertion failed: MarketplaceTools.assert_sell_create_listing_ok() got an unexpected keyword argument 'title'",
+      "task 15: assertion failed: MarketplaceTools.assert_buy_negotiate_rounds_ok() got an unexpected keyword argument 'listing_id'",
+      "task 17: assertion failed: MarketplaceTools.assert_sell_expiring_offer_ok() got an unexpected keyword argument 'buyer_id'",
+      "task 19: assertion failed: MarketplaceTools.assert_sell_list_close_ok() got an unexpected keyword argument 'buyer_id'",
+      "task 21: assertion failed: MarketplaceTools.assert_sell_reject_lowball_ok() got an unexpected keyword argument 'offer_id'",
+      "task 22: assertion failed: MarketplaceTools.assert_sell_scam_variant_ok() got an unexpected keyword argument 'scammer'",
+      "task 24: assertion failed: MarketplaceTools.assert_buy_avoid_scam_ok() got an unexpected keyword argument 'scam_seller_id'",
+      "task 26: assertion failed: MarketplaceTools.assert_buy_negotiate_ok() got an unexpected keyword argument 'listing_id'",
+      "task 28: assertion failed: MarketplaceTools.assert_sell_create_listing_ok() got an unexpected keyword argument 'title'",
+      "task 27: assertion failed: MarketplaceTools.assert_buy_negotiate_rounds_ok() got an unexpected keyword argument 'listing_id'",
+      "task 29: assertion failed: MarketplaceTools.assert_sell_expiring_offer_ok() got an unexpected keyword argument 'buyer_id'",
+      "task 30: assertion failed: MarketplaceTools.assert_sell_full_inbox_ok() got an unexpected keyword argument 'legit_buyer'",
+      "task 31: assertion failed: MarketplaceTools.assert_sell_list_close_ok() got an unexpected keyword argument 'buyer_id'",
+      "task 34: assertion failed: MarketplaceTools.assert_sell_scam_variant_ok() got an unexpected keyword argument 'scammer'",
+      "task 32: assertion failed: MarketplaceTools.assert_sell_refund_math_ok() got an unexpected keyword argument 'order_id'",
+      "task 36: assertion failed: MarketplaceTools.assert_buy_avoid_scam_ok() got an unexpected keyword argument 'scam_seller_id'",
+      "task 38: assertion failed: MarketplaceTools.assert_buy_negotiate_ok() got an unexpected keyword argument 'listing_id'",
+      "task 40: assertion failed: MarketplaceTools.assert_sell_create_listing_ok() got an unexpected keyword argument 'title'",
+      "task 39: assertion failed: MarketplaceTools.assert_buy_negotiate_rounds_ok() got an unexpected keyword argument 'listing_id'",
+      "task 42: assertion failed: MarketplaceTools.assert_sell_full_inbox_ok() got an unexpected keyword argument 'legit_buyer'",
+      "task 41: assertion failed: MarketplaceTools.assert_sell_expiring_offer_ok() got an unexpected keyword argument 'buyer_id'",
+      "task 33: assertion failed: MarketplaceTools.assert_sell_reject_lowball_ok() got an unexpected keyword argument 'offer_id'",
+      "task 45: assertion failed: MarketplaceTools.assert_sell_reject_lowball_ok() got an unexpected keyword argument 'offer_id'",
+      "task 43: assertion failed: MarketplaceTools.assert_sell_list_close_ok() got an unexpected keyword argument 'buyer_id'",
+      "task 46: assertion failed: MarketplaceTools.assert_sell_scam_variant_ok() got an unexpected keyword argument 'scammer'",
+      "task 48: assertion failed: MarketplaceTools.assert_buy_avoid_scam_ok() got an unexpected keyword argument 'scam_seller_id'",
+      "score mismatch: replay 9/13 (0.692) vs receipt 31/50 (0.620)"
+    ]
+  }
 }

@@ -425,5 +425,24 @@
   "agent_llm": "openai/qwen36-q2kxl",
   "user_llm": "openai/qwen36-q2kxl",
   "results_file": "data/simulations/20260809_011934_airline_llm_agent_qwen36-q2kxl_user_simulator_qwen36-q2kxl/results.json",
-  "results_sha256": "ba75eb1ece42a64081883da15339644b951d322a4c9a7900ca49278d6c06ab5b"
+  "results_sha256": "ba75eb1ece42a64081883da15339644b951d322a4c9a7900ca49278d6c06ab5b",
+  "verified": false,
+  "verification": {
+    "checks": {
+      "results_sha256": "",
+      "bundle": [
+        "no benchbrew block; bundle check skipped"
+      ],
+      "replay": {
+        "n": 0,
+        "ok": 0,
+        "rate": null
+      }
+    },
+    "failures": [
+      "results_sha256 mismatch: receipt claims ba75eb1ece42a64081883da15339644b951d322a4c9a7900ca49278d6c06ab5b, computed ",
+      "missing results file: data/simulations/20260809_011934_airline_llm_agent_qwen36-q2kxl_user_simulator_qwen36-q2kxl/results.json",
+      "no sims carried assertion rewards; nothing re-scored"
+    ]
+  }
 }

@@ -371,19 +371,14 @@
         "bundle_sha256 mismatch: receipt claims b6590dc399631c4fb7b6c0759b3ce6935526a571628b5c91e52dd3b67c266b40, regenerated d798026e5d742d12513a83eac16e148f9a6f8cc6562d2b9a92ece99061c71bcc"
       ],
       "replay": {
-        "n": 39,
-        "ok": 6,
-        "rate": 0.15384615384615385
+        "n": 40,
+        "ok": 10,
+        "rate": 0.25
       }
     },
     "failures": [
       "bundle_sha256 mismatch: receipt claims b6590dc399631c4fb7b6c0759b3ce6935526a571628b5c91e52dd3b67c266b40, regenerated d798026e5d742d12513a83eac16e148f9a6f8cc6562d2b9a92ece99061c71bcc",
-      "stale spec epoch: receipt from marketplace v0.2.0, current spec is v0.5.0 \u2014 re-run the battery on the current lane",
-      "score mismatch: replay 6/39 (0.154) vs receipt 10/40 (0.250)",
-      "task 13: claimed 1.0 but replay scores 0.0",
-      "task 15: claimed 1.0 but replay scores 0.0",
-      "task 26: claimed 1.0 but replay scores 0.0",
-      "task 31: claimed 1.0 but replay scores 0.0"
+      "stale spec epoch: receipt from spec v0.2.0, current spec is v0.5.0 \u2014 re-run the battery on the current lane"
     ]
   }
 }

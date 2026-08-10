@@ -12,6 +12,8 @@ leaderboard.json in the output dir.
 from __future__ import annotations
 
 import json
+import os
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -19,6 +21,10 @@ from pathlib import Path
 from .ladder_report import wilson_ci
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
+def _env(key: str, default: str) -> str:
+    return os.environ.get(key, default)
 
 
 def build_board(receipts: list[dict]) -> dict:
@@ -70,13 +76,38 @@ def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     out_dir = Path(args[0]) if args else REPO_ROOT / "outputs"
     write = "--write" in sys.argv
+    t2_dir = Path(_env("PILSNER_T2_DIR", str(REPO_ROOT.parent / "tau2-bench")))
+    bb_dir = Path(_env("PILSNER_BENCHBREW_DIR",
+                       str(REPO_ROOT.parent / "benchbrew")))
+    verify_py = t2_dir / ".venv" / "bin" / "python"
+    verify_script = REPO_ROOT / "arena" / "verify_trajectory.py"
     paths = sorted(out_dir.glob("report_tau2_seed*.json"))
     if not paths:
         print(f"no receipts in {out_dir}")
         return 1
-    receipts = [json.load(open(p)) for p in paths]
     admitted, refused = [], []
-    for r in receipts:
+    for p in paths:
+        r = json.load(open(p))
+        # admission-time re-verification: the board never trusts a stamp —
+        # a receipt whose evidence can't replay against the CURRENT domain
+        # code (emitter epochs, spec drift, overwritten packages) is stale,
+        # and the stamp is kept honest so drift can't linger unseen
+        if verify_py.exists() and verify_script.exists():
+            proc = subprocess.run(
+                [str(verify_py), str(verify_script), str(p), str(t2_dir),
+                 str(bb_dir)],
+                capture_output=True, text=True)
+            try:
+                verdict = json.loads(proc.stdout)
+            except ValueError:
+                verdict = {"verified": False, "failures": [
+                    f"verifier output unparseable: {proc.stdout[-120:]}{proc.stderr[-120:]}"]}
+            r["verified"] = bool(verdict.get("verified"))
+            r["verification"] = {
+                "checks": verdict.get("checks", {}),
+                "failures": verdict.get("failures", []),
+            }
+            p.write_text(json.dumps(r, indent=2))
         if r.get("verified") is True:
             admitted.append(r)
         else:

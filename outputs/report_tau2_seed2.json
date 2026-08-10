@@ -279,5 +279,24 @@
   "agent_llm": "openai/bonsai-1bit",
   "user_llm": "openai/bonsai-1bit",
   "results_file": "data/simulations/20260808_235743_airline_llm_agent_bonsai-1bit_user_simulator_bonsai-1bit/results.json",
-  "results_sha256": "d132a31b7d6b8cf39b8d107d36efd7301d028f4645593da40e7264873f6da711"
+  "results_sha256": "d132a31b7d6b8cf39b8d107d36efd7301d028f4645593da40e7264873f6da711",
+  "verified": false,
+  "verification": {
+    "checks": {
+      "results_sha256": "",
+      "bundle": [
+        "no benchbrew block; bundle check skipped"
+      ],
+      "replay": {
+        "n": 0,
+        "ok": 0,
+        "rate": null
+      }
+    },
+    "failures": [
+      "results_sha256 mismatch: receipt claims d132a31b7d6b8cf39b8d107d36efd7301d028f4645593da40e7264873f6da711, computed ",
+      "missing results file: data/simulations/20260808_235743_airline_llm_agent_bonsai-1bit_user_simulator_bonsai-1bit/results.json",
+      "no sims carried assertion rewards; nothing re-scored"
+    ]
+  }
 }
