@@ -1,6 +1,6 @@
 {
   "board_version": 3,
-  "updated": "2026-08-10T02:09:31.479029+00:00",
+  "updated": "2026-08-10T02:13:35.719939+00:00",
   "king": "qwen36-iq2xxs [marketplace]",
   "portfolio": [
     {
@@ -45,7 +45,8 @@
       "results_sha256": "612cb4dab9c196e7",
       "timestamp": "2026-08-10T00:26:22.903278+00:00",
       "rank": 1,
-      "tie_break": "speed"
+      "tie_break": "speed",
+      "verdict": "king"
     },
     {
       "model": "qwen36-iq2xxs",
@@ -70,7 +71,8 @@
       "results_sha256": "98cffad5174ea5e1",
       "timestamp": "2026-08-09T23:17:00.188124+00:00",
       "rank": 2,
-      "tie_break": "speed"
+      "tie_break": "speed",
+      "verdict": "refused"
     },
     {
       "model": "qwen36-iq2xxs",
@@ -95,7 +97,8 @@
       "results_sha256": "643ca39783db04cd",
       "timestamp": "2026-08-09T23:41:33.206584+00:00",
       "rank": 3,
-      "tie_break": "speed"
+      "tie_break": "speed",
+      "verdict": "refused"
     },
     {
       "model": "qwen36-iq2xxs",
@@ -120,7 +123,8 @@
       "results_sha256": "34395202bd460923",
       "timestamp": "2026-08-09T23:57:51.720083+00:00",
       "rank": 4,
-      "tie_break": "speed"
+      "tie_break": "speed",
+      "verdict": "refused"
     }
   ]
 }

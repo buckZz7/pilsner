@@ -69,7 +69,27 @@ def build_board(receipts: list[dict]) -> dict:
     for i, e in enumerate(entries):
         e["rank"] = i + 1
         e["tie_break"] = "speed"  # documented: equal quality -> faster ranks
+    # ratchet verdicts vs the king: a challenger dethrones on QUALITY (>2%
+    # better) or on SPEED (within the quality tie band — CI overlap or <=1%
+    # below — AND >=5% faster same-box). Both are legitimate miner moves:
+    # improve the model, or improve the serving.
     king = entries[0] if entries else None
+    if king:
+        for e in entries:
+            if e is king or king["success_rate"] == 0:
+                e["verdict"] = "king"
+                continue
+            quality_gap = e["success_rate"] - king["success_rate"]
+            if quality_gap > 0.02:
+                e["verdict"] = "crown"
+            elif (quality_gap >= -0.01
+                  and king["wall_clock_s"] > 0
+                  and e["wall_clock_s"] <= king["wall_clock_s"] * 0.95):
+                e["verdict"] = "speed-crown"
+            elif quality_gap < -0.02:
+                e["verdict"] = "refused"
+            else:
+                e["verdict"] = "hold"
     # portfolio readout: the GENERAL capability number — every verified
     # receipt pooled per model across ALL lanes. This is the headline a
     # challenger must beat; the per-lane entries are its audit trail.
