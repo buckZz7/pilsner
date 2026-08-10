@@ -61,9 +61,14 @@ def build_board(receipts: list[dict]) -> dict:
             "results_sha256": (rs[0].get("results_sha256") or "")[:16],
             "timestamp": rs[-1].get("timestamp", ""),
         })
-    entries.sort(key=lambda e: (-e["success_rate"], -e["n_scored"]))
+    # quality first, then evidence count, then SPEED on ties: the arena rule
+    # "both better and faster wins; quality gates first" — a tie in quality
+    # must rank the faster entry higher (same-box wall clock)
+    entries.sort(key=lambda e: (-e["success_rate"], -e["n_scored"],
+                                e["wall_clock_s"]))
     for i, e in enumerate(entries):
         e["rank"] = i + 1
+        e["tie_break"] = "speed"  # documented: equal quality -> faster ranks
     king = entries[0] if entries else None
     # portfolio readout: the GENERAL capability number — every verified
     # receipt pooled per model across ALL lanes. This is the headline a
