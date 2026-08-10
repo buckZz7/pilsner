@@ -1,17 +1,17 @@
 {
   "board_version": 3,
-  "updated": "2026-08-10T02:42:37.498630+00:00",
-  "king": "qwen36-iq2xxs [marketplace]",
+  "updated": "2026-08-10T02:59:02.543780+00:00",
+  "king": "qwen36-iq2xxs [local_services]",
   "portfolio": [
     {
       "model": "qwen36-iq2xxs",
-      "portfolio_score": 0.3812,
+      "portfolio_score": 0.372,
       "ci95": [
-        0.3096,
-        0.4585
+        0.3017,
+        0.4481
       ],
       "n_success": 61,
-      "n_scored": 160,
+      "n_scored": 164,
       "lanes": [
         "local_services",
         "marketplace",
@@ -23,13 +23,13 @@
     },
     {
       "model": "qwen36-q8",
-      "portfolio_score": 0.325,
+      "portfolio_score": 0.3182,
       "ci95": [
-        0.2008,
-        0.4798
+        0.2,
+        0.4656
       ],
-      "n_success": 13,
-      "n_scored": 40,
+      "n_success": 14,
+      "n_scored": 44,
       "lanes": [
         "local_services",
         "marketplace",
@@ -69,32 +69,6 @@
     },
     {
       "model": "qwen36-iq2xxs",
-      "success_rate": 0.4,
-      "n_success": 16,
-      "n_scored": 40,
-      "ci95": [
-        0.2635,
-        0.554
-      ],
-      "mean_reward": 0.4,
-      "wall_clock_s": 870.5,
-      "reasoning": "unspecified",
-      "engine": "unspecified",
-      "domain": "marketplace",
-      "num_trials": 1,
-      "n_receipts": 1,
-      "receipts": [
-        "64"
-      ],
-      "tau2_commit": "668d3bcd13",
-      "results_sha256": "612cb4dab9c196e7",
-      "timestamp": "2026-08-10T00:26:22.903278+00:00",
-      "rank": 2,
-      "tie_break": "speed",
-      "verdict": "king"
-    },
-    {
-      "model": "qwen36-iq2xxs",
       "success_rate": 0.375,
       "n_success": 15,
       "n_scored": 40,
@@ -115,7 +89,7 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "98cffad5174ea5e1",
       "timestamp": "2026-08-09T23:17:00.188124+00:00",
-      "rank": 3,
+      "rank": 2,
       "tie_break": "speed",
       "verdict": "king"
     },
@@ -141,7 +115,7 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "643ca39783db04cd",
       "timestamp": "2026-08-09T23:41:33.206584+00:00",
-      "rank": 4,
+      "rank": 3,
       "tie_break": "speed",
       "verdict": "king"
     },
@@ -167,6 +141,33 @@
       "tau2_commit": "668d3bcd13",
       "results_sha256": "34395202bd460923",
       "timestamp": "2026-08-09T23:57:51.720083+00:00",
+      "rank": 4,
+      "tie_break": "speed",
+      "verdict": "king"
+    },
+    {
+      "model": "qwen36-iq2xxs",
+      "success_rate": 0.3636,
+      "n_success": 16,
+      "n_scored": 44,
+      "ci95": [
+        0.2378,
+        0.5113
+      ],
+      "mean_reward": 0.3636,
+      "wall_clock_s": 962.3,
+      "reasoning": "unspecified",
+      "engine": "unspecified",
+      "domain": "marketplace",
+      "num_trials": 1,
+      "n_receipts": 2,
+      "receipts": [
+        "64",
+        "70"
+      ],
+      "tau2_commit": "668d3bcd13",
+      "results_sha256": "612cb4dab9c196e7",
+      "timestamp": "2026-08-10T02:56:41.639925+00:00",
       "rank": 5,
       "tie_break": "speed",
       "verdict": "king"
@@ -199,26 +200,27 @@
     },
     {
       "model": "qwen36-q8",
-      "success_rate": 0.3,
-      "n_success": 3,
-      "n_scored": 10,
+      "success_rate": 0.2857,
+      "n_success": 4,
+      "n_scored": 14,
       "ci95": [
-        0.1078,
-        0.6032
+        0.1172,
+        0.5465
       ],
-      "mean_reward": 0.3,
-      "wall_clock_s": 441.3,
+      "mean_reward": 0.2857,
+      "wall_clock_s": 556.3,
       "reasoning": "unspecified",
       "engine": "unspecified",
       "domain": "marketplace",
       "num_trials": 1,
-      "n_receipts": 1,
+      "n_receipts": 2,
       "receipts": [
-        "66"
+        "66",
+        "70"
       ],
       "tau2_commit": "668d3bcd13",
       "results_sha256": "39a828c43eaa44e7",
-      "timestamp": "2026-08-10T02:12:20.339805+00:00",
+      "timestamp": "2026-08-10T02:54:39.357243+00:00",
       "rank": 7,
       "tie_break": "speed",
       "verdict": "refused"

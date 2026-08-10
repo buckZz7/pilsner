@@ -358,6 +358,11 @@ def main() -> int:
     gpu_clock = _env("PILSNER_GPU_CLOCK", "unspecified")
     user_model = _env("PILSNER_USER_MODEL", "")
     user_base_url = _env("PILSNER_USER_BASE_URL", "")
+    # head-to-head: the same fresh bundle runs against BOTH the challenger
+    # and the king (PILSNER_RUN_ROLE=king on the second pass). The king's
+    # re-run lands as a linked same-seed receipt — freshness for both,
+    # exact comparison (same tasks, same box, same session).
+    run_role = _env("PILSNER_RUN_ROLE", "challenger")
 
     if not (t2_dir / "data" / "tau2").is_dir():
         print(f"error: tau2-bench not found at {t2_dir} (set PILSNER_T2_DIR)", file=__import__("sys").stderr)
@@ -476,9 +481,16 @@ def main() -> int:
         "user_llm": merged.get("user_llm"),
         "results_file": ",".join(str(p.relative_to(t2_dir)) for p in results_files),
         "results_sha256": results_sha,
+        "role": run_role,
     }
+    if run_role == "king":
+        receipt["head_to_head"] = {
+            "seed": seed,
+            "bundle_sha256": (bb_prov or {}).get("bundle_sha256"),
+        }
     out_dir.mkdir(parents=True, exist_ok=True)
-    receipt_path = out_dir / f"report_tau2_seed{seed}.json"
+    suffix = f"_{run_role}" if run_role != "challenger" else ""
+    receipt_path = out_dir / f"report_tau2_seed{seed}{suffix}.json"
     with open(receipt_path, "w") as f:
         json.dump(receipt, f, indent=2)
     print(f"receipt: {receipt_path}")

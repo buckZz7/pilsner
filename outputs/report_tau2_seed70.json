@@ -1,0 +1,97 @@
+{
+  "schema": "pilsner-tau2-receipt/v1",
+  "timestamp": "2026-08-10T02:54:39.357243+00:00",
+  "arena": "pilsner",
+  "instrument": "tau2-bench",
+  "benchbrew": {
+    "domain": "marketplace",
+    "spec_version": "0.5.0",
+    "spec_sha256": "f4d93cc34cef188a",
+    "seed": "70",
+    "seed_source": "operator",
+    "n_tasks": "4",
+    "bundle_sha256": "a369d3dc258a283e630fdd8e71e786ab0e6e418a9006977b0024552480db0d37"
+  },
+  "domain": "marketplace",
+  "task_split": "base",
+  "task_sample": "first",
+  "sampled_task_ids": {
+    "marketplace": "[\"0\", \"1\", \"2\", \"3\"]"
+  },
+  "num_tasks": 4,
+  "num_trials": 1,
+  "max_steps": 25,
+  "max_steps_seconds": null,
+  "seed_slot": 70,
+  "model": "qwen36-q8",
+  "base_url": "http://87.197.110.78:41176/v1",
+  "reasoning": "unspecified",
+  "engine": "unspecified",
+  "engine_version": "unspecified",
+  "model_sha256": "unspecified",
+  "served_model": "/root/models/qwen36-q8/Qwen3.6-27B-Revised-q8_0.gguf",
+  "model_declared": "qwen36-q8",
+  "gpu_clock": "unspecified",
+  "parallel": "unspecified",
+  "context": "unspecified",
+  "wall_clock_s": 114.966,
+  "success_rate": 0.25,
+  "mean_reward": 0.25,
+  "n_success": 1,
+  "n_scored": 4,
+  "per_task": [
+    {
+      "task_id": "2",
+      "reward": 0.0,
+      "tool_calls": 0,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "1",
+      "reward": 1.0,
+      "tool_calls": 1,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "0",
+      "reward": 0.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "3",
+      "reward": 0.0,
+      "tool_calls": 2,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    }
+  ],
+  "tau2_git_commit": "668d3bcd135c02aa3438f987ef45735b7c163ee3",
+  "agent_llm": "openai/qwen36-q8",
+  "user_llm": "openai/qwen3-4b",
+  "results_file": "data/simulations/20260810_025249_marketplace_llm_agent_qwen36-q8_user_simulator_qwen3-4b/results.json",
+  "results_sha256": "5ce21c724bef2d308bd942e118126004592ebc6ae1fae6c7565a8dc1d4affc92",
+  "role": "challenger",
+  "verified": true,
+  "verification": {
+    "checks": {
+      "results_sha256": "5ce21c724bef2d308bd942e118126004592ebc6ae1fae6c7565a8dc1d4affc92",
+      "bundle": [
+        "bundle regenerated: sha matches a369d3dc258a\u2026"
+      ],
+      "replay": {
+        "n": 4,
+        "ok": 1,
+        "rate": 0.25
+      }
+    },
+    "failures": []
+  }
+}
