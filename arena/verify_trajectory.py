@@ -83,6 +83,7 @@ def _replay_results(receipt: dict, t2_dir: Path) -> tuple[list[dict], list[str]]
     files = [str(p) for p in (receipt.get("results_file") or "").split(",") if p]
     failures: list[str] = []
     per_task: list[dict] = []
+    never_executed = 0
     adapter = TypeAdapter(Message)
 
     def _env_for(domain: str):
@@ -115,6 +116,11 @@ def _replay_results(receipt: dict, t2_dir: Path) -> tuple[list[dict], list[str]]
                 failures.append(f"task {sim.get('task_id')}: bad initial_state: {e}")
                 continue
             msgs = [adapter.validate_python(m) for m in (sim.get("messages") or [])]
+            if not msgs:
+                # the sim NEVER executed (0 messages) — an infra artifact
+                # (e.g. the serving slot rejected every request), not a model
+                # result. Tracked; a battery full of these is invalid.
+                never_executed += 1
             try:
                 env.set_state(init.initialization_data, [], msgs, strict=False)
             except Exception as e:  # noqa: BLE001
@@ -160,6 +166,16 @@ def _replay_results(receipt: dict, t2_dir: Path) -> tuple[list[dict], list[str]]
                 "replay": 1.0 if all(results) else 0.0,
                 "claimed": (sim.get("reward_info") or {}).get("reward"),
             })
+    # a battery where a material share of sims NEVER executed (0 messages)
+    # is an infra artifact (serving slot rejected every request), not a
+    # model result — the battery is INVALID, never scored as a 0-run.
+    n_sims = sum(len(json.loads((t2_dir / f).read_text()).get("simulations", []))
+                 for f in files) if files else 0
+    if never_executed and n_sims and never_executed / n_sims >= 0.25:
+        failures.append(
+            f"battery invalid: {never_executed}/{n_sims} sims never executed "
+            f"(infra artifact, e.g. serving slot context exhaustion) — "
+            f"the battery did not run; re-run it, do not score it")
     return per_task, failures
 
 

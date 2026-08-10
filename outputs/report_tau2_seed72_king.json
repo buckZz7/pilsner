@@ -1,0 +1,131 @@
+{
+  "schema": "pilsner-tau2-receipt/v1",
+  "timestamp": "2026-08-10T03:57:36.844672+00:00",
+  "arena": "pilsner",
+  "instrument": "tau2-bench",
+  "benchbrew": {
+    "domain": "marketplace",
+    "spec_version": "0.5.0",
+    "spec_sha256": "f4d93cc34cef188a",
+    "seed": "72",
+    "seed_source": "operator",
+    "n_tasks": "10",
+    "bundle_sha256": "72b4e7ba1abfee3079b8fa9ebb59251c20ae334986f205f6faf47a6d39799b5e"
+  },
+  "domain": "marketplace",
+  "task_split": "base",
+  "task_sample": "first",
+  "sampled_task_ids": {
+    "marketplace": "[\"0\", \"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\"]"
+  },
+  "num_tasks": 10,
+  "num_trials": 1,
+  "max_steps": 25,
+  "max_steps_seconds": null,
+  "seed_slot": 72,
+  "model": "qwen36-iq2xxs",
+  "base_url": "http://87.197.110.78:41176/v1",
+  "reasoning": "unspecified",
+  "engine": "unspecified",
+  "engine_version": "unspecified",
+  "model_sha256": "unspecified",
+  "served_model": "/root/models/qwen36-iq2xxs/Qwen3.6-27B-UD-IQ2_XXS.gguf",
+  "model_declared": "qwen36-iq2xxs",
+  "gpu_clock": "unspecified",
+  "parallel": "4",
+  "context": "unspecified",
+  "wall_clock_s": 87.314,
+  "success_rate": 0.0,
+  "mean_reward": 0.0,
+  "n_success": 0,
+  "n_scored": 10,
+  "per_task": [
+    {
+      "task_id": "4",
+      "reward": 0.0,
+      "tool_calls": 0,
+      "tool_errors": 0,
+      "termination": "user_stop",
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "0",
+      "reward": 0.0,
+      "no_result": true,
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "1",
+      "reward": 0.0,
+      "no_result": true,
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "2",
+      "reward": 0.0,
+      "no_result": true,
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "3",
+      "reward": 0.0,
+      "no_result": true,
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "5",
+      "reward": 0.0,
+      "no_result": true,
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "6",
+      "reward": 0.0,
+      "no_result": true,
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "7",
+      "reward": 0.0,
+      "no_result": true,
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "8",
+      "reward": 0.0,
+      "no_result": true,
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "9",
+      "reward": 0.0,
+      "no_result": true,
+      "domain": "marketplace"
+    }
+  ],
+  "tau2_git_commit": "668d3bcd135c02aa3438f987ef45735b7c163ee3",
+  "agent_llm": "openai/qwen36-iq2xxs",
+  "user_llm": "openai/qwen3-4b",
+  "results_file": "data/simulations/20260810_035614_marketplace_llm_agent_qwen36-iq2xxs_user_simulator_qwen3-4b/results.json",
+  "results_sha256": "21638d5571972ed3fb7d81a640fe3dfa94459907db286a1cd2356166d501184e",
+  "role": "king",
+  "head_to_head": {
+    "seed": 72,
+    "bundle_sha256": "72b4e7ba1abfee3079b8fa9ebb59251c20ae334986f205f6faf47a6d39799b5e"
+  },
+  "verified": true,
+  "verification": {
+    "checks": {
+      "results_sha256": "21638d5571972ed3fb7d81a640fe3dfa94459907db286a1cd2356166d501184e",
+      "bundle": [
+        "bundle regenerated: sha matches 72b4e7ba1abf\u2026"
+      ],
+      "replay": {
+        "n": 10,
+        "ok": 0,
+        "rate": 0.0
+      }
+    },
+    "failures": []
+  }
+}

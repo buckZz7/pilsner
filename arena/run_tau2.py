@@ -103,6 +103,7 @@ def build_command(
     task_split: str,
     user_model: str | None = None,
     user_base_url: str | None = None,
+    concurrency: int = 1,
 ) -> list[str]:
     """Build the tau2 CLI arguments (after the executable) for a served model.
 
@@ -128,6 +129,12 @@ def build_command(
     ]
     if max_steps is not None:
         cmd += ["--max-steps", str(max_steps)]
+    # parallel sims: the GPU is latency-bound and mostly idle during agent
+    # runs — concurrent sims collapse the battery wall clock ~3-4x. The
+    # concurrency is a DECLARED serving config (recorded in the receipt);
+    # head-to-head passes run at the same value, so the comparison stays fair.
+    if num_tasks > 1 and concurrency > 1:
+        cmd += ["--max-concurrency", str(concurrency)]
     return cmd
 
 
@@ -415,7 +422,8 @@ def main() -> int:
     for d in domains:
         cmd = [tau2_binary(t2_dir)] + build_command(
             model, base_url, d, num_tasks, num_trials, max_steps, task_split,
-            user_model or None, user_base_url or None)
+            user_model or None, user_base_url or None,
+            concurrency=int(_env("PILSNER_T2_CONCURRENCY", "1")))
         if max_steps_s is not None:
             cmd += ["--max-steps-seconds", str(max_steps_s)]
         print(f"run ({d}):", " ".join(cmd))
@@ -468,7 +476,7 @@ def main() -> int:
         "served_model": _served_model(base_url),
         "model_declared": model,
         "gpu_clock": gpu_clock,
-        "parallel": parallel,
+        "parallel": _env("PILSNER_T2_CONCURRENCY", "1"),
         "context": ctx,
         "wall_clock_s": round(wall_clock_s, 3),
         "success_rate": merged["success_rate"],

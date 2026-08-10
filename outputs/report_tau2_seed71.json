@@ -1,0 +1,113 @@
+{
+  "schema": "pilsner-tau2-receipt/v1",
+  "timestamp": "2026-08-10T03:08:32.142614+00:00",
+  "arena": "pilsner",
+  "instrument": "tau2-bench",
+  "benchbrew": {
+    "domain": "marketplace",
+    "spec_version": "0.5.0",
+    "spec_sha256": "f4d93cc34cef188a",
+    "seed": "71",
+    "seed_source": "operator",
+    "n_tasks": "8",
+    "bundle_sha256": "a12714f20d9601980083b79fbe16b124a8f26e0a7dd05fb31a99453bd6de9fc9"
+  },
+  "domain": "marketplace",
+  "task_split": "base",
+  "task_sample": "first",
+  "sampled_task_ids": {
+    "marketplace": "[\"0\", \"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\"]"
+  },
+  "num_tasks": 8,
+  "num_trials": 1,
+  "max_steps": 25,
+  "max_steps_seconds": null,
+  "seed_slot": 71,
+  "model": "qwen36-iq2xxs",
+  "base_url": "http://87.197.110.78:41176/v1",
+  "reasoning": "unspecified",
+  "engine": "unspecified",
+  "engine_version": "unspecified",
+  "model_sha256": "unspecified",
+  "served_model": null,
+  "model_declared": "qwen36-iq2xxs",
+  "gpu_clock": "unspecified",
+  "parallel": "4",
+  "context": "unspecified",
+  "wall_clock_s": 53.511,
+  "success_rate": 0.0,
+  "mean_reward": 0.0,
+  "n_success": 0,
+  "n_scored": 8,
+  "per_task": [
+    {
+      "task_id": "0",
+      "reward": 0.0,
+      "no_result": true,
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "1",
+      "reward": 0.0,
+      "no_result": true,
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "2",
+      "reward": 0.0,
+      "no_result": true,
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "3",
+      "reward": 0.0,
+      "no_result": true,
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "4",
+      "reward": 0.0,
+      "no_result": true,
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "5",
+      "reward": 0.0,
+      "no_result": true,
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "6",
+      "reward": 0.0,
+      "no_result": true,
+      "domain": "marketplace"
+    },
+    {
+      "task_id": "7",
+      "reward": 0.0,
+      "no_result": true,
+      "domain": "marketplace"
+    }
+  ],
+  "tau2_git_commit": "668d3bcd135c02aa3438f987ef45735b7c163ee3",
+  "agent_llm": "openai/qwen36-iq2xxs",
+  "user_llm": "openai/qwen3-4b",
+  "results_file": "data/simulations/20260810_030743_marketplace_llm_agent_qwen36-iq2xxs_user_simulator_qwen3-4b/results.json",
+  "results_sha256": "b85687c16866ad4d129150be357e7aeab936c03684cc06feca6671d1bed1190a",
+  "role": "challenger",
+  "verified": true,
+  "verification": {
+    "checks": {
+      "results_sha256": "b85687c16866ad4d129150be357e7aeab936c03684cc06feca6671d1bed1190a",
+      "bundle": [
+        "bundle regenerated: sha matches a12714f20d96\u2026"
+      ],
+      "replay": {
+        "n": 8,
+        "ok": 0,
+        "rate": 0.0
+      }
+    },
+    "failures": []
+  }
+}
